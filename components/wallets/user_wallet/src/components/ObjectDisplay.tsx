@@ -1,7 +1,9 @@
 import styles from './ObjectDisplay.module.scss';
 import classNames from 'classnames/bind';
-import qrcode, { QRCodeSegment } from 'qrcode';
-import { useState, useEffect } from 'react';
+import { QRCodeSVG, QRProps } from 'qrcode.react';
+import { useState } from 'react';
+import { JSX } from 'react';
+
 
 const cx = classNames.bind(styles);
 interface props {
@@ -9,38 +11,17 @@ interface props {
     type: string,
     address?: string,
     description?: string,
-}
-function QRCode_generator(id: string, address: string) {
-    // const text: QRCodeSegment[] = [
-    //     {data: id, mode:'kanji'},
-    //     {data: address, mode:'kanji'},
-    // ];
-    // const url_code = qrcode.toDataURL(text).then(code => {
-    //     console.log(code)
-    // })
-    //     .catch(e => console.log(e));
-
-    const link = `http://localhost:3000/check_ticket?id=${id}&&address=${address}`;
-
-    return qrcode.toCanvas(link).then(code => code).catch(e => console.log(e))
+    setQrCode: React.Dispatch<React.SetStateAction<JSX.Element | null>>,
+    setOffQr: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function ObjectDisplay({ id, type, address = '', description = '' }: props) {
-    const [qrcodeImage, setQrcodeImage] = useState<HTMLCanvasElement | null>(null);
+function ObjectDisplay({ id, type, address = '', description = '', setQrCode, setOffQr }: props) {
+    const getQr = () => {
+        setQrCode(
+            <QRCodeSVG className={cx('code')}
+                value={`http://127.0.0.1:5500/verify_ticket?ticket_id=${id}&&owner=${address}`} />)
+        setOffQr(false);
 
-    // useEffect(() => {
-    //     QRCode_generator(id, address).then((canvas) => {
-    //         if (canvas instanceof HTMLCanvasElement) {
-    //             setQrcodeImage(canvas);
-    //         }
-    //     });
-    // }, [id, address]);
-    const get_qrcode = () => {
-        QRCode_generator(id, address).then((canvas) => {
-            if (canvas) {
-                setQrcodeImage(canvas);
-            }
-        });
     }
     return (
         <div className={cx('wrapper')}>
@@ -65,18 +46,8 @@ function ObjectDisplay({ id, type, address = '', description = '' }: props) {
 
                 <div className={cx('get-qrcode-btn')}>
                     <button
-                        onClick={get_qrcode}
+                        onClick={getQr}
                     >Get QRCode</button>
-                </div>
-
-                <div className={cx('qr-code')}>
-                    <canvas
-                        className={cx('code')}
-                        ref={node => {
-                            if (node && qrcodeImage) {
-                                node.replaceWith(qrcodeImage);
-                            }
-                        }} />
                 </div>
             </div>
         </div>
