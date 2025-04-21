@@ -15,7 +15,8 @@ export default function OwnedObjects({ address }: { address: string }) {
 	const { data } = useSuiClientQuery('getOwnedObjects', {
 		owner: address,
 		options: {
-			showType: true
+			showType: true,
+			showDisplay: true,
 		}
 	});
 	if (!data) {

@@ -57,11 +57,10 @@
 
 
 import { useEffect } from "react";
-import { genAddressSeed, generateRandomness } from "@mysten/sui/zklogin";
+import { generateRandomness } from "@mysten/sui/zklogin";
 import { ZKLogin, useZKLogin } from "react-sui-zk-login-kit";
 import { useState } from "react";
 import axios from 'axios'
-import { gg_redirect_uri } from "./var_env";
 import UserWallet from './components/wallet';
 import styles from './App.module.scss';
 import classNames from 'classnames/bind';
@@ -120,7 +119,7 @@ const App = () => {
     }
     if(address) sethide(true);
   }, [encodedJwt]);
-
+  
   const providers = {
     google: {
       clientId: ggSign.client_id,

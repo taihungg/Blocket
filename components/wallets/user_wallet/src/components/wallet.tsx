@@ -21,9 +21,6 @@ const UserWallet: React.FC<UserWalletProps> = ({ address, salt }) => {
       </div>
       <div className={cx('user-wallet')}>
         <GetAllObjects address={address} />
-        <GetAllObjects address={address} />
-        <GetAllObjects address={address} />
-        <GetAllObjects address={address} />
       </div>
     </div>
   );
