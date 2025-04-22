@@ -1,11 +1,65 @@
-.parent, .wrapper{
+.parent, .wrapper, .zklogin{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-top: 5px;
 }
-.wrapper{
+.pass-login{
+    // height: ;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-bottom: 5px double black;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    .pass-login-title{
+        text-align: center;
+        font-size: 30px;
+    }
+    .pass-input, .show-btn{
+        border-radius: 5px;
+        font-size:20px;
+        font-weight: 600;
+    }
+    input, .show-btn{
+        height: 50px;
+    }
+    input{
+        width: 300px;
+    }
+    .show-btn{
+        width: 70px;
+    }
+    .not-match{
+        color: red;
+    }
+    .create-btn, .create-btn-hide{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        button{
+            width: 200px;
+            height: 50px;
+            border-radius: 10px;
+            background-color: rgba(230, 167, 85, 0.751);
+        }
+    }
+    .create-btn{
+        button{
+            &:hover{
+                cursor: pointer;
+            }
+        }
+    }
+    .create-btn-hide{
+        button{
+            background-color: rgb(224, 214, 201);
+        }
+    }
+}
+.zklogin{
     border: 3px solid green;
     box-shadow: 2px 2px;
 }

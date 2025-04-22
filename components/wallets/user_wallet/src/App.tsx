@@ -61,9 +61,10 @@ import { generateRandomness } from "@mysten/sui/zklogin";
 import { ZKLogin, useZKLogin } from "react-sui-zk-login-kit";
 import { useState } from "react";
 import axios from 'axios'
+import classNames from 'classnames/bind';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import UserWallet from './components/wallet';
 import styles from './App.module.scss';
-import classNames from 'classnames/bind';
 
 const SUI_PROVER_ENDPOINT = 'https://prover-dev.mystenlabs.com/v1';
 const cx = classNames.bind(styles);
@@ -87,8 +88,11 @@ const App = () => {
     client_id: '',
     redirect_uri: ''
   });
+  const [showPass, setShowPass] = useState(false);
+  const [pass, setPass] = useState('');
+  const [rePass, setRePass] = useState('');
   const handleSuccess = () => {
-    console.log(address, userSalt);
+    // console.log(address, userSalt);
     const props = {
       address: address ? address : '',
       salt: userSalt ? userSalt : ''
@@ -117,9 +121,9 @@ const App = () => {
 
       requestMock.then(salt => setUserSalt(String(salt)))
     }
-    if(address) sethide(true);
+    if (address) sethide(true);
   }, [encodedJwt]);
-  
+
   const providers = {
     google: {
       clientId: ggSign.client_id,
@@ -134,22 +138,53 @@ const App = () => {
     sethide(false);
     logout();
   }
+  const handleLoginPass = () => {
+    if(pass === rePass){
+      
+    }
+  }
   return (
     <div className={cx('parent')}>
       <div className={cx('wrapper')}>
-        {!hide &&
-          <div>
-            <ZKLogin
-              onSuccess={() => sethide(true)}
-              providers={providers}
-              proverProvider={SUI_PROVER_ENDPOINT}
-            />
+        <div className={cx('pass-login')}>
+          <h3 className={cx('pass-login-title')}>Sign in with password</h3>
+          <div className={cx('password')}>
+            <input type={showPass? "text" : "password"} className={cx('pass-input')} onChange={(e) => setPass(e.target.value)}/>
+            <button className={cx('show-btn')} onClick={() => setShowPass(!showPass)}>{showPass? "show": "hide"}</button>
           </div>
-        }
-        {address && <>{handleSuccess()}</>}
-        <button 
-        className={cx('logout-btn')}
-        onClick={handleLogout}>logout</button>
+          <div className={cx('password')}>
+            <input 
+              type={showPass? "text" : "password"} className={cx('pass-input')} onChange={(e) => setRePass(e.target.value)}
+            />
+            <button 
+              className={cx('show-btn')}
+              onClick={() => setShowPass(!showPass)}
+            >{showPass? "show": "hide"}</button>
+          </div>
+          <div className={cx('not-match')}>
+            <p>{pass === rePass? '' : 'passwords is not match'}</p>
+          </div>
+          <div className={cx(pass === rePass? 'create-btn' : 'create-btn-hide')}>
+            <button
+            onClick={handleLoginPass}
+            >Yessir</button>
+          </div>
+        </div>
+        <div className={cx('zklogin')}>
+          {!hide &&
+            <div>
+              <ZKLogin
+                onSuccess={() => sethide(true)}
+                providers={providers}
+                proverProvider={SUI_PROVER_ENDPOINT}
+              />
+            </div>
+          }
+          {address && <>{handleSuccess()}</>}
+          <button
+            className={cx('logout-btn')}
+            onClick={handleLogout}>logout</button>
+        </div>
       </div>
     </div>
   )
