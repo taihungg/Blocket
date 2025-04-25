@@ -81,6 +81,7 @@ async function decryptMnemonic(password: string, encryptedHex: string): Promise<
 export default async function generateAddress(password: string): Promise<string | undefined> {
   try {
     let encryptedData = localStorage.getItem('encrypted_mnemonic') || '';
+    // let encryptedData = '';
 
     // Nếu chưa có dữ liệu mã hóa, tạo mnemonic mới và mã hóa
     if (!encryptedData || encryptedData === '') {

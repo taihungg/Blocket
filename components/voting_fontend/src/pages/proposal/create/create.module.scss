@@ -1,0 +1,75 @@
+.wrapper{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 20px;
+}
+.label{
+   margin-top: 20px; 
+}
+.resgister{
+    width: 432px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.form{
+    border: 1px solid black;
+    box-shadow: 1px 1px;
+    padding-left: 16px;
+    padding-right: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+    .title{
+        h3{font-size: 30px}
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 15px;
+        border-bottom: 1px solid black;
+        margin-bottom: 20px;
+    }
+    .input-title{
+        border: 1px solid black;
+    }
+    .policy{
+        width: 300px; 
+        font-size: 13px;
+    }
+    .submit{
+        margin-top: 10px;
+        width: 300px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        input{
+            background-color: rgb(139, 186, 68);
+            color: black;
+            font-size: 20px;
+            width: 40%;
+            height: 100%;
+        }
+    }
+    .have-account{
+        width: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        a{
+            color: blue;
+            font-size:15px;
+        }
+    }
+}
+input{
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
+}
+

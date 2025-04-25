@@ -1,0 +1,41 @@
+@use '../../../../styles_common/style.module.scss' as style;
+$shadow : rgb(223, 230, 255);
+
+.wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .report {
+        height: 90%;
+        width: 90%;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: rgb(125,115,243);
+        .title,
+        .status,
+        .update {
+            margin-left: 10px;
+        }
+
+        .title,
+        .update {
+            color: $shadow
+        }
+
+        .status {
+            font-size: 30px;
+            color: rgb(248, 248, 254);
+        }
+
+        .update {
+            display: flex;
+            font-size: 13px;
+        }
+    }
+}

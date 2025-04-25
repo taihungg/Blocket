@@ -1,0 +1,20 @@
+@use '../../styles_common/style.module.scss' as style;
+.wrapper,.button-wrap,.button{
+    width: inherit;
+    height: inherit;
+}
+.wrapper {
+    .button-wrap {
+        .button {
+            background-color: style.$primary_color;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: style.$text;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+        }
+    }
+}

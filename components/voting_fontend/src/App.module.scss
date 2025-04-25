@@ -1,0 +1,16 @@
+@use './styles_common/style.module.scss' as style;
+*{
+    padding:0;
+    margin: 0;
+    box-sizing: border-box;
+}
+.body{
+    margin-top: style.$header_height;
+    .status{
+        
+    }
+    .content{
+        margin: auto;
+        width: 80%;
+    }
+}

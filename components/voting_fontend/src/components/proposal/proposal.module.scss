@@ -1,0 +1,103 @@
+@use '../../styles_common/style.module.scss' as style;
+
+.header,
+.type-status,
+.vote-btn,
+.body,
+.author-endtime,
+.author,
+.endtime, .sumary{
+    display: flex;
+}
+
+.wrapper,
+.header {
+    width: 100%;
+}
+
+.type-status,
+.header,
+.author-endtime,
+.sumary {
+    justify-content: space-between;
+}
+
+.author-endtime,
+.sumary {
+    margin-top: 10px;
+    font-size: 13px;
+}
+.wrapper {
+    margin-top: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: 2px 3px;
+    .proposal {
+        padding: 10px 20px;
+        padding-bottom: 0;
+        .header {
+            height: 40px;
+            align-items: center;
+
+            .type-status {
+                width: 21%;
+
+                .type,
+                .status {
+                    border: 1px solid;
+                    padding: 2px 5px;
+                    border-radius: 5px;
+                    font-size: 16px;
+                    font-weight: 700;
+                }
+
+                .type {
+                    background-color: rgb(224, 231, 255);
+                    color: rgb(55, 48, 163);
+                }
+
+                .status {
+                    background-color: rgb(220, 252, 231);
+                    color: rgb(22, 101, 52);
+                }
+            }
+            .vote-btn {
+                height: 40px;
+                width: 5rem;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+            }
+        }
+
+        .body {
+            flex-direction: column;
+            width: 80%;
+
+            .title {
+                font-size: 25px;
+                font-weight: 800;
+            }
+
+            .description {
+                margin-top: 10px;
+                font-size: 17px;
+            }
+
+            .author-endtime {
+                .author,.endtime {
+                    p{
+                        margin-left: 10px;
+                    }
+                }
+            }
+        }
+
+        .sumary {
+            background-color: rgb(249, 250, 251);
+            height: 20px;
+            font-size: 15px;
+            width: 100%;
+        }
+    }
+}

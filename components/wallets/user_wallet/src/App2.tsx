@@ -1,79 +1,44 @@
-import { useEffect, useState } from "react";
-import { generateRandomness } from "@mysten/sui/zklogin";
-import { ZKLogin, useZKLogin } from "react-sui-zk-login-kit";
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import UserWallet from './components/wallet';
 import styles from './App.module.scss';
 import genAddress from './components/create_address';
 
-const SUI_PROVER_ENDPOINT = 'https://prover-dev.mystenlabs.com/v1';
 const cx = classNames.bind(styles);
 
-const App = () => {
-  const { encodedJwt, setUserSalt, logout, address, userSalt } = useZKLogin();
-  const [hide, sethide] = useState(false);
-  const [ggSign, setGGSign] = useState({
-    client_id: '',
-    redirect_uri: ''
-  });
+// Component cho trang đăng nhập
+const LoginPage = ({ onLogin }: { onLogin: (address: string) => void }) => {
   const [showPass, setShowPass] = useState(false);
   const [pass, setPass] = useState('');
   const [rePass, setRePass] = useState('');
-  const [addressPass, setAddressPass] = useState<string | undefined>(); // Thêm state để lưu address từ mật khẩu
+  const navigate = useNavigate();
 
-  const handleSuccess = () => {
-    const props = {
-      address: address ? address : '',
-      salt: userSalt ? userSalt : ''
-    };
-    return <UserWallet {...props} />;
-  };
-
+  // Kiểm tra mật khẩu trong localStorage khi trang tải
   useEffect(() => {
-    const fetch = async () => {
-      const response = await axios.get('http://localhost:3000/get_server_env');
-      if (response.status === 200) {
-        setGGSign({
-          client_id: response.data.GOOGLE_CLIENT_ID,
-          redirect_uri: response.data.GOOGLE_REDIRECT_URI
-        });
-      }
-    };
-    fetch();
-
-    if (encodedJwt) {
-      const requestMock = new Promise(
-        (resolve): void =>
-          resolve(localStorage.getItem("userSalt") || generateRandomness())
-      );
-      requestMock.then(salt => setUserSalt(String(salt)));
+    const storedPassword = localStorage.getItem('password');
+    if (storedPassword) {
+      const autoLogin = async () => {
+        const address_pass = await genAddress(storedPassword);
+        if (address_pass) {
+          onLogin(address_pass);
+          navigate('/wallet'); // Chuyển hướng đến trang ví
+        } else {
+          console.error('Error auto-login with stored password');
+          localStorage.removeItem('password');
+        }
+      };
+      autoLogin();
     }
-  }, [encodedJwt]);
-
-  const providers = {
-    google: {
-      clientId: ggSign.client_id,
-      redirectURI: ggSign.redirect_uri,
-    },
-    twitch: {
-      clientId: "YOUR_TWITCH_CLIENT_ID",
-      redirectURI: "YOUR_REDIRECT_URI",
-    }
-  };
-
-  const handleLogout = () => {
-    sethide(false);
-    setAddressPass(undefined); // Xóa addressPass khi logout
-    logout();
-  };
+  }, [navigate, onLogin]);
 
   const handleLoginPass = async () => {
     if (pass !== '' && rePass !== '' && pass === rePass) {
       const address_pass = await genAddress(pass);
       if (address_pass) {
-        setAddressPass(address_pass); // Lưu address vào state
-        sethide(true); // Ẩn giao diện đăng nhập
+        localStorage.setItem('password', pass); // Lưu mật khẩu vào localStorage
+        onLogin(address_pass);
+        navigate('/wallet'); // Chuyển hướng đến trang ví
       } else {
         console.error('Error generating address');
       }
@@ -82,62 +47,98 @@ const App = () => {
 
   return (
     <div className={cx('parent')}>
-      {!hide && (
-        <div className={cx('wrapper')}>
-          <div className={cx('pass-login')}>
-            <h3 className={cx('pass-login-title')}>Sign in with password</h3>
-            <div className={cx('password')}>
-              <input
-                type={showPass ? "text" : "password"}
-                className={cx('pass-input')}
-                onChange={(e) => setPass(e.target.value)}
-              />
-              <button
-                className={cx('show-btn')}
-                onClick={() => setShowPass(!showPass)}
-              >
-                {showPass ? "hide" : "show"}
-              </button>
-            </div>
-            <div className={cx('password')}>
-              <input
-                type={showPass ? "text" : "password"}
-                className={cx('pass-input')}
-                onChange={(e) => setRePass(e.target.value)}
-              />
-            </div>
-            <div className={cx('not-match')}>
-              <p>{pass === rePass ? '' : 'passwords do not match'}</p>
-            </div>
-            <div className={cx(pass === rePass ? 'create-btn' : 'create-btn-hide')}>
-              <button onClick={handleLoginPass}>Sign in with password</button>
-            </div>
+      <div className={cx('wrapper')}>
+        <div className={cx('pass-login')}>
+          <h3 className={cx('pass-login-title')}>Sign in with password</h3>
+          <div className={cx('password')}>
+            <input
+              type={showPass ? "text" : "password"}
+              className={cx('pass-input')}
+              onChange={(e) => setPass(e.target.value)}
+            />
+            <button
+              className={cx('show-btn')}
+              onClick={() => setShowPass(!showPass)}
+            >
+              {showPass ? "hide" : "show"}
+            </button>
           </div>
-          <div className={cx('zklogin')}>
-            <div>
-              <ZKLogin
-                onSuccess={() => sethide(true)}
-                providers={providers}
-                proverProvider={SUI_PROVER_ENDPOINT}
-              />
-            </div>
+          <div className={cx('password')}>
+            <input
+              type={showPass ? "text" : "password"}
+              className={cx('pass-input')}
+              onChange={(e) => setRePass(e.target.value)}
+            />
+          </div>
+          <div className={cx('not-match')}>
+            <p>{pass === rePass ? '' : 'passwords do not match'}</p>
+          </div>
+          <div className={cx(pass === rePass ? 'create-btn' : 'create-btn-hide')}>
+            <button onClick={handleLoginPass}>Sign in with password</button>
           </div>
         </div>
-      )}
-      <div className={cx('wrapper')}>
-        {(address || addressPass) && (
-          <>
-            {address ? handleSuccess() : <UserWallet address={addressPass || ''} salt="" />}
-            <button
-              className={cx('logout-btn')}
-              onClick={handleLogout}
-            >
-              logout
-            </button>
-          </>
-        )}
       </div>
     </div>
+  );
+};
+
+// Component cho trang ví
+const WalletPage = ({ address, onLogout }: { address: string; onLogout: () => void }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('password'); // Xóa mật khẩu khi đăng xuất
+    onLogout();
+    navigate('/login'); // Chuyển hướng về trang đăng nhập
+  };
+
+  return (
+    <div className={cx('parent')}>
+      <div className={cx('wrapper')}>
+        <UserWallet address={address} salt="" />
+        <button className={cx('logout-btn')} onClick={handleLogout}>
+          logout
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Component chính
+const App = () => {
+  const [passwordAddress, setPasswordAddress] = useState<string | undefined>();
+
+  const handleLogin = (address: string) => {
+    setPasswordAddress(address);
+  };
+
+  const handleLogout = () => {
+    setPasswordAddress(undefined);
+  };
+
+  return (
+    <Router>
+      <Routes>
+        <Route
+          path="/login"
+          element={<LoginPage onLogin={handleLogin} />}
+        />
+        <Route
+          path="/wallet"
+          element={
+            passwordAddress ? (
+              <WalletPage address={passwordAddress} onLogout={handleLogout} />
+            ) : (
+              <LoginPage onLogin={handleLogin} />
+            )
+          }
+        />
+        <Route
+          path="*"
+          element={<LoginPage onLogin={handleLogin} />}
+        />
+      </Routes>
+    </Router>
   );
 };
 

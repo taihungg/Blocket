@@ -7,7 +7,7 @@ import classNames from 'classnames/bind';
 
 interface UserWalletProps {
   address: string;
-  salt: string;
+  salt?: string;
 }
 const cx = classNames.bind(styles);
 const UserWallet: React.FC<UserWalletProps> = ({ address, salt }) => {
@@ -17,7 +17,7 @@ const UserWallet: React.FC<UserWalletProps> = ({ address, salt }) => {
       <div className={cx('user-info')}>
         <h1>hi user</h1>
         <p>Address: {address}</p>
-        <p>Salt: {salt}</p>
+        {salt&& <p>Salt: {salt}</p>}
       </div>
       <div className={cx('user-wallet')}>
         <GetAllObjects address={address} />

@@ -1,0 +1,48 @@
+@use '../../styles_common/style.module.scss' as style;
+.header,
+.buttons,
+.icon {
+    display: flex;
+    align-items: center;
+}
+.wrapper,.header{
+    width: 100%;
+}
+
+.wrapper {
+    .content {
+        width: 60%;
+        margin: auto;
+        padding-top: 50px;
+
+        .header {
+            height: 2.7rem;
+            justify-content: space-between;
+            h3 {
+                font-size: 25px;
+                font-weight: 700;
+            }
+
+            .buttons {
+                height: 100%;
+                .button{
+                    height: 100%;
+                }
+                .icon {
+                    justify-content: center;
+                    width: 40px;
+                    height: 40px;
+                    border: 2px solid style.$shadow_border;
+                    border-radius: 5px;
+                    font-size: 15px;
+                    color: style.$shadow_black;
+                    margin-left: 0.5rem;
+                }
+            }
+        }
+
+        .body {
+            margin-top: 10px;
+        }
+    }
+}
