@@ -6,7 +6,8 @@
 .body,
 .author-endtime,
 .author,
-.endtime, .sumary{
+.endtime,
+.sumary {
     display: flex;
 }
 
@@ -27,14 +28,17 @@
     margin-top: 10px;
     font-size: 13px;
 }
+
 .wrapper {
     margin-top: 10px;
     border: 1px solid black;
     border-radius: 10px;
     box-shadow: 2px 3px;
+
     .proposal {
         padding: 10px 20px;
         padding-bottom: 0;
+
         .header {
             height: 40px;
             align-items: center;
@@ -61,6 +65,7 @@
                     color: rgb(22, 101, 52);
                 }
             }
+
             .vote-btn {
                 height: 40px;
                 width: 5rem;
@@ -77,6 +82,11 @@
             .title {
                 font-size: 25px;
                 font-weight: 800;
+
+                &:hover {
+                    cursor: pointer;
+                    color: style.$primary_color;
+                }
             }
 
             .description {
@@ -85,8 +95,10 @@
             }
 
             .author-endtime {
-                .author,.endtime {
-                    p{
+
+                .author,
+                .endtime {
+                    p {
                         margin-left: 10px;
                     }
                 }

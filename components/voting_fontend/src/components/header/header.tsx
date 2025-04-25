@@ -10,13 +10,13 @@ function Header() {
         <div className={cx('label-functions')}>
           <div className={cx('label')}>
             <img src='mizu_voting.png' />
-            <h3>Mizu Vote</h3>
+            <h3>Ticket Block</h3>
           </div>
           <div className={cx('functions')}>
             <ul>
               <li className={cx('option')} >Dashboard</li>
-              <li className={cx('option')}>Proposals</li>
-              <li className={cx('option')}>Vote History</li>
+              <li className={cx('option')}>My Wallet</li>
+              <li className={cx('option')}>History</li>
               <li className={cx('option')}>Settings</li>
             </ul>
           </div>

@@ -1,51 +1,106 @@
 import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
 import { Transaction } from "@mysten/sui/transactions";
+import { useEffect, useState } from "react";
+import styles from "./buy_ticket.module.scss";
+import classNames from "classnames/bind";
 
-const package_id = "0x25fc9842c73938a49dc3add1e9eb76e57e37a495ea1de445be3ef41343b1afa8";
+const cx = classNames.bind(styles);
+
+const package_id = "0xecc735d2613a74d2314a0797585beff45df7c3ddb626323b167fc03d994d38e7";
+const workshop_id = "0x3fb5bf45c5274e4ad16009d42f0c9c29155e59ab194199c3039e909f7101db0f";
 
 interface Props {
     event_name: string;
 }
 
-export default function Buy_ticket_button(props: Props) {
+export default function BuyTicketButton(props: Props) {
     const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
     const currAccount = useCurrentAccount();
     const client = useSuiClient();
+    const [tokenId, setTokenId] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleBuyTicket = () => {
-        const tx = new Transaction();
-        tx.setGasBudget(30000000);
+    useEffect(() => {
+        const fetchUserObject = async () => {
+            if (!currAccount) return;
 
-        tx.moveCall({
-            target: `${package_id}::${props.event_name}::buy_ticket`,
-            arguments: [
-                tx.object("0x1370c1129f4ba0a2d6f5c0d0191a1db0416c4a4c7b1946bd18dea847588609f2"),
-                tx.object("0x9f8851cd17fd68c51f81b9f364172a6ccb475bb2cfb06fa179f7dd92da2a8339"),
-            ],
-        });
+            try {
+                const ownedObjects = await client.getOwnedObjects({
+                    owner: currAccount.address,
+                    options: { showType: true, showContent: true },
+                });
 
-        if (currAccount) {
-            signAndExecuteTransaction(
-                { transaction: tx, account: currAccount, chain: "sui:devnet" }, // Sửa "sui::devnet" thành "sui:devnet"
-                {
-                    onSuccess: (data, variables, context) => {
-                        console.log("Giao dịch thành công:", data, variables, context);
-                        alert("Mua vé thành công!");
-                    },
-                    onError: (e) => {
-                        console.log("Lỗi:", e);
-                        alert("Đã có lỗi xảy ra khi mua vé.");
-                    },
+                const userObject = ownedObjects.data.find(
+                    (obj) => obj.data?.type === `0x2::coin::Coin<${package_id}::tick::TICK>`
+                );
+
+                if (userObject && userObject.data?.objectId) {
+                    setTokenId(userObject.data.objectId);
+                } else {
+                    console.error("Address doesn't have any TICK token. Mint first!");
+                    alert("Please mint TICK token first!");
                 }
-            );
-        } else {
+            } catch (error) {
+                console.error("Error fetching TICK token:", error);
+                alert("Error fetching TICK token. Please try again.");
+            }
+        };
+
+        fetchUserObject();
+    }, [currAccount, client]);
+
+    const handleBuyTicket = async () => {
+        if (!currAccount) {
             alert("Vui lòng kết nối ví Sui trước!");
+            return;
+        }
+
+        if (!tokenId) {
+            alert("Vui lòng mint token TICK trước!");
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const tx = new Transaction();
+            tx.setGasBudget(30000000);
+
+            tx.moveCall({
+                target: `${package_id}::${props.event_name}::buy_ticket`,
+                arguments: [
+                    tx.object(tokenId),
+                    tx.object(workshop_id),
+                ],
+            });
+            signAndExecuteTransaction({
+                transaction: tx,
+                account: currAccount,
+                chain: 'sui:testnet'
+            }, {
+                onSuccess: (result) => {
+                    console.log("Transaction successful:", result);
+                },
+                onError: (error) => {
+                    console.error("Transaction failed:", error);
+                },
+            })
+        } catch (error) {
+            console.error("Error during transaction:", error);
+            alert(`Đã có lỗi xảy ra khi mua vé: ${error}`);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <button onClick={handleBuyTicket} disabled={!currAccount}>
-            Buy Ticket
-        </button>
+        <div className={cx("wrapper")}>
+            <button
+                className={cx("buy-ticket")}
+                onClick={handleBuyTicket}
+                disabled={!currAccount || !tokenId || isLoading}
+            >
+                {isLoading ? "Processing..." : "Buy Ticket"}
+            </button>
+        </div>
     );
 }

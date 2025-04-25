@@ -10,6 +10,7 @@ import { BrowserRouter, Routes, Route, createBrowserRouter, RouterProvider } fro
 import CreateProposal from './pages/proposal/create/create.tsx';
 import { EventDetail } from './pages/index.ts';
 import WalletState from './logics/wallet_state.tsx';
+import { UserWallet } from './components/index.ts';
 
 
 const queryClient = new QueryClient();
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
     path: "/show_all_objects",
     element: <WalletState/>
     
+  },
+  {
+    path: '/my_wallet',
+    element: <UserWallet/>
   }
 ])
 createRoot(document.getElementById('root')!).render(

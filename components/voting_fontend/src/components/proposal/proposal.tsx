@@ -6,24 +6,24 @@ import { faClock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(styles);
 export interface Porposal_type {
-    proposal_type: string,
-    proposal_status: string,
+    event_type: string,
+    event_status: string,
     title: string,
     desciption: string,
-    author: string,
+    host: string,
     endtime: string,
-    sumVotes: string,
+    sum_participant: string,
     participation: string,
 }
 function Proposal(props: Porposal_type) {
     const {
-        proposal_type,
-        proposal_status,
+        event_type,
+        event_status,
         title,
         desciption,
-        author,
+        host,
         endtime,
-        sumVotes,
+        sum_participant,
         participation,
     } = props
     return (
@@ -32,15 +32,15 @@ function Proposal(props: Porposal_type) {
                 <div className={cx('header')}>
                     <div className={cx('type-status')}>
                         <div className={cx('type')}>
-                            {proposal_type}
+                            {event_type}
                         </div>
                         <div className={cx('status')}>
-                            {proposal_status}
+                            {event_status}
                         </div>
                     </div>
 
                     <div className={cx('vote-btn')}>
-                        <Button title="vote"/>
+                        <Button title="Register"/>
                     </div>
                 </div>
 
@@ -56,7 +56,7 @@ function Proposal(props: Porposal_type) {
                     <div className={cx('author-endtime')}>
                         <div className={cx('author')}>
                             <FontAwesomeIcon icon={faUser} />
-                            <p>Proposed by {author}</p>
+                            <p>Hosted by {host}</p>
                         </div>
                         <div className={cx('endtime')}>
                             <FontAwesomeIcon icon={faClock} />
@@ -67,7 +67,7 @@ function Proposal(props: Porposal_type) {
                 </div>
 
                 <div className={cx('sumary')}>
-                    <p>{sumVotes} votes cast</p>
+                    <p>{sum_participant} votes cast</p>
                     <p>{participation} participation</p>
                 </div>
 
