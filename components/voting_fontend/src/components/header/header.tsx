@@ -1,6 +1,7 @@
 import { ConnectButton } from '@mysten/dapp-kit';
 import styles from './header.module.scss';
 import classNames from 'classnames/bind';
+import { Link } from 'react-router';
 
 const cx = classNames.bind(styles);
 function Header() {
@@ -14,10 +15,10 @@ function Header() {
           </div>
           <div className={cx('functions')}>
             <ul>
-              <li className={cx('option')} >Dashboard</li>
-              <li className={cx('option')}>My Wallet</li>
-              <li className={cx('option')}>History</li>
-              <li className={cx('option')}>Settings</li>
+              <li className={cx('option')} ><Link to="/">Dashboard</Link></li>
+              <li className={cx('option')}><Link to="/my_wallet">My Wallet</Link></li>
+              <li className={cx('option')}><Link to="/history">History</Link></li>
+              <li className={cx('option')}><Link to="/settings">Settings</Link></li>
             </ul>
           </div>
         </div>

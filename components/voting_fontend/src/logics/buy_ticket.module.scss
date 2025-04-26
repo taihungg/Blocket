@@ -7,8 +7,9 @@
 }
 .buy-ticket{
     width: 70%;
-    height: 30px;
+    height: 50px;
     background-color: rgb(158, 198, 234);
+    border-radius: 20px;
     &:hover{
         cursor: pointer;
         background-color: rgb(67, 132, 186);

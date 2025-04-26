@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import { Button } from '../../components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
-import Proposal, { Porposal_type } from '../proposal/proposal';
+import Proposal, { Event_type } from '../proposal/proposal';
 
 const cx = classNames.bind(styles);
 // interface Porposal {
@@ -17,7 +17,9 @@ const cx = classNames.bind(styles);
 //     participation: string,
 // }
 function Content() {
-    const porposalDetail: Porposal_type = {
+    //câu response từ server xuống về thông tin sự kiện dựa trên id
+    const porposalDetail: Event_type = {
+        event_id: "1",
         event_type: "Workshop",
         event_status: "Active",
         title: "Sui hackahouse for builders who hold SUI",
@@ -42,10 +44,6 @@ function Content() {
                     </div>
                 </div>
                 <div className={cx('body')}>
-                    <Proposal {...porposalDetail} />
-                    <Proposal {...porposalDetail} />
-                    <Proposal {...porposalDetail} />
-                    <Proposal {...porposalDetail} />
                     <Proposal {...porposalDetail} />
                 </div>
             </div>

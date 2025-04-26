@@ -3,23 +3,27 @@ import styles from './detail.module.scss';
 import classNames from 'classnames/bind';
 import { faCalendarDays, faVideo, faSmile } from '@fortawesome/free-solid-svg-icons';
 import Buy_ticket_button from '../../logics/buy_ticket';
+import { Event_type } from '../../components/proposal/proposal';
+import { useParams } from 'react-router';
 
 const cx = classNames.bind(styles);
+
 function Detail() {
+    const params = useParams();
     return (
         <div className={cx('wrapper')}>
             <div className={cx('event-detail')}>
-                <div className={cx('side-bar')}>
+                {/* <div className={cx('side-bar')}>
                     <div className={cx('event-label')}>
-                        <img src="event-label.avif" alt="event-label-image" />
+                        <img src="mizu.jpg" alt="event-label-image" />
                     </div>
                     <div className={cx('other-part')}>
-                        <Buy_ticket_button event_name="sui_bootcamp"/>
+                        <Buy_ticket_button event_name="sui_bootcamp" />
                         <div className={cx('hosts')}></div>
                         <div className={cx('clients')}></div>
                         <div className={cx('tags')}></div>
                     </div>
-                </div>
+                </div>*/}
                 <div className={cx('detail')}>
                     <div className={cx('title')}>
                         <h2>Kickstart your career with our first career development session</h2>
@@ -42,12 +46,20 @@ function Detail() {
                         </div>
                     </div>
                     <div className={cx('status')}>
-                        <div className={cx('icon-border')}>
-                            <FontAwesomeIcon icon={faSmile} className={cx('icon')} />
+                        <div className={cx('label')}>
+                            <div className={cx('event-label')}>
+                                <img src="event-label-avif" alt="event-label-image" />
+                            </div>
                         </div>
-                        <h4>Thank You for joinning</h4>
-                        <h5>We hope you enjoyed the event!</h5>
+                        <div className={cx('thank')}>
+                            <div className={cx('icon-border')}>
+                                <FontAwesomeIcon icon={faSmile} className={cx('icon')} />
+                            </div>
+                            <h4>Thank You for joinning</h4>
+                            <h5>We hope you enjoyed the event!</h5>
+                        </div>
                     </div>
+                    <Buy_ticket_button event_name="sui_bootcamp" />
                     <div className={cx('about-event')}>
                         <p className={cx('')}>
                             About event
@@ -87,6 +99,7 @@ function Detail() {
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     );

@@ -3,9 +3,12 @@ import classNames from 'classnames/bind';
 import Button from '../buttons/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faUser } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router';
+import BuyTicketButton from '../../logics/buy_ticket';
 
 const cx = classNames.bind(styles);
-export interface Porposal_type {
+export interface Event_type {
+    event_id: string,
     event_type: string,
     event_status: string,
     title: string,
@@ -15,8 +18,9 @@ export interface Porposal_type {
     sum_participant: string,
     participation: string,
 }
-function Proposal(props: Porposal_type) {
+function Proposal(props: Event_type) {
     const {
+        event_id,
         event_type,
         event_status,
         title,
@@ -39,14 +43,15 @@ function Proposal(props: Porposal_type) {
                         </div>
                     </div>
 
-                    <div className={cx('vote-btn')}>
-                        <Button title="Register"/>
-                    </div>
+                    {/* <div className={cx('vote-btn')}>
+                         <Button title="Register"/> 
+                        <BuyTicketButton/>
+                    </div> */}
                 </div>
 
                 <div className={cx('body')}>
                     <div className={cx('title')}>
-                        {title}
+                        <Link to={`/event_detail/${event_id}`}>{title}</Link>
                     </div>
 
                     <div className={cx('description')}>

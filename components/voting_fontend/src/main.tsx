@@ -29,7 +29,7 @@ const router = createBrowserRouter([
     element: <CreateProposal />,
   },
   {
-    path: "/event_detail",
+    path: "/event_detail/:id",
     element: <EventDetail/>
   },
   {
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
   {
     path: '/my_wallet',
     element: <UserWallet/>
-  }
+  },
 ])
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
