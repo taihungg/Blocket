@@ -5,6 +5,7 @@ import { faCalendarDays, faVideo, faSmile } from '@fortawesome/free-solid-svg-ic
 import Buy_ticket_button from '../../logics/buy_ticket';
 import { Event_type } from '../../components/proposal/proposal';
 import { useParams } from 'react-router';
+import React from 'react';
 
 const cx = classNames.bind(styles);
 

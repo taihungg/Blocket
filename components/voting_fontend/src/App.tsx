@@ -1,3 +1,4 @@
+import React from 'react';
 import styles from './App.module.scss';
 import classNames from 'classnames/bind';
 import { Header, Status, Content } from './components';
