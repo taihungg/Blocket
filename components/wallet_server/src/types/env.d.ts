@@ -11,6 +11,8 @@ declare global {
       GOOGLE_REDIRECT_URI: string,
       SUI_PROVER_ENDPOINT: string,
       SECRET_KEY:string,
+      NETWORK: 'mainnet' | 'testnet' | 'devnet',
+      PACKAGE_ID: string,
     }
   }
 }

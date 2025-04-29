@@ -37,9 +37,9 @@ const ELockKeyMismatch: u64 = 0;
 // === Public Functions ===
 
 /// Lock `obj` and get a key that can be used to unlock it.
-public fun lock<T: key + store>(obj: T, ctx: &mut TxContext): (Locked<T>, Key) {
+public fun lock<T: key + store>(obj: T, ctx: &mut TxContext): (Locked<T>, Key){
     let key = Key { id: object::new(ctx) };
-    let mut lock = Locked {
+    let mut lock = Locked<T> {
         id: object::new(ctx),
         key: object::id(&key),
     };
@@ -53,7 +53,6 @@ public fun lock<T: key + store>(obj: T, ctx: &mut TxContext): (Locked<T>, Key) {
 
     // Adds the `object` as a DOF for the `lock` object
     dof::add(&mut lock.id, LockedObjectKey {}, obj);
-
     (lock, key)
 }
 

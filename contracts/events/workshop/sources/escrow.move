@@ -55,7 +55,7 @@ public struct Escrow<phantom T: key + store> has key, store {
 /// The `sender` and `recipient` of the two escrowed objects do not match
 const EMismatchedSenderRecipient: u64 = 0;
 
-/// The `exchange_for` fields of the two escrowed objects do not match
+// The `exchange_for` fields of the two escrowed objects do not match
 const EMismatchedExchangeObject: u64 = 1;
 
 // === Public Functions ===
