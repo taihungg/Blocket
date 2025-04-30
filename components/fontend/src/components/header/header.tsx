@@ -18,7 +18,7 @@ function Header() {
               <li className={cx('option')} ><Link to="/">Dashboard</Link></li>
               <li className={cx('option')} ><Link to="/buy_tick_token">Buy TICK</Link></li>
               <li className={cx('option')}><Link to="/my_wallet">My Wallet</Link></li>
-              <li className={cx('option')}><Link to="/history">History</Link></li>
+              <li className={cx('option')}><Link to="/exchange">Exchange</Link></li>
               <li className={cx('option')}><Link to="/settings">Settings</Link></li>
             </ul>
           </div>

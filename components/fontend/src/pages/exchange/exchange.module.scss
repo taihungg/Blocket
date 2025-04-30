@@ -1,0 +1,84 @@
+.wrapper,
+.exchange,
+.modes,
+.ticket-sell-mode,
+.token-buy-mode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.exchange {
+    width: 50%;
+    flex-direction: column;
+    margin-top: 5rem;
+}
+
+.modes {
+    border: 3px solid black;
+    width: 70%;
+    max-width: 330px;
+    justify-content: space-between;
+    font-size: 25px;
+    margin-bottom: 30px;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    .ticket-sell-mode {
+        border-right: 1px solid black;
+        width: 70%;
+
+        &:hover {
+            background-color: red;
+        }
+    }
+
+    .tick-color {
+        background-color: red;
+    }
+
+    .token-buy-mode {
+        width: 30%;
+
+        &:hover {
+            background-color: green;
+        }
+    }
+
+    .token-color {
+
+        background-color: green;
+    }
+}
+
+button {
+    margin-top: 10px;
+    margin-left: 20%;
+    width: 60%;
+    height: 40px;
+    font-size: 20px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.ticket {
+    width: 100%;
+    max-width: 400px;
+
+    form {
+        display: flex;
+        flex-direction: column;
+
+        .ticket-list {
+            border: 2px solid black;
+            height: 40px;
+            margin-bottom: 10px;
+        }
+    }
+}
+
+.ticket-list {}

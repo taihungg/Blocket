@@ -10,8 +10,8 @@ export interface IEventInfo {
     endtime: Date;
     sum_participant: string;
     participation: string;
-    createdAt?: Date; // Automatically added by timestamps
-    updatedAt?: Date; // Automatically added by timestamps
+    createdAt?: Date; 
+    updatedAt?: Date; 
 }
 
 const schema = new mongoose.Schema({

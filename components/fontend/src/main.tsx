@@ -12,13 +12,14 @@ import { EventDetail } from './pages/index.ts';
 import WalletState from './logics/wallet_state.tsx';
 import { UserWallet } from './components/index.ts';
 import Swap from './pages/swap/swap.tsx';
+import Exchange from './pages/exchange/exchange.tsx';
 
 
 const queryClient = new QueryClient();
 const networks = {
   testnet: { url: getFullnodeUrl('testnet') },
   localnet: { url: getFullnodeUrl('localnet') },
-  devnet: {url: getFullnodeUrl('devnet')}
+  devnet: { url: getFullnodeUrl('devnet') }
 }
 const router = createBrowserRouter([
   {
@@ -31,30 +32,34 @@ const router = createBrowserRouter([
   },
   {
     path: "/event_detail/:id",
-    element: <EventDetail/>
+    element: <EventDetail />
   },
   {
     path: "/show_all_objects",
-    element: <WalletState/>
-    
+    element: <WalletState />
+
   },
   {
     path: '/my_wallet',
-    element: <UserWallet/>
+    element: <UserWallet />
   },
   {
     path: '/buy_tick_token',
-    element: <Swap/>
+    element: <Swap />
+  },
+  {
+    path: '/exchange',
+    element: <Exchange />
   }
 ])
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <SuiClientProvider networks={networks} defaultNetwork='testnet'>
-          <WalletProvider autoConnect>
-            <RouterProvider router={router}/>
-          </WalletProvider>
-        </SuiClientProvider>
-      </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <SuiClientProvider networks={networks} defaultNetwork='testnet'>
+        <WalletProvider autoConnect>
+          <RouterProvider router={router} />
+        </WalletProvider>
+      </SuiClientProvider>
+    </QueryClientProvider>
   </StrictMode>,
 )

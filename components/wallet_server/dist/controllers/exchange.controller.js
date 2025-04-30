@@ -14,7 +14,7 @@ const client_1 = require("@mysten/sui/client");
 const config_1 = require("../config/config");
 const exchangeHandler_1 = require("./exchangeHandler");
 const exchange_process_model_1 = require("../models/exchange_process.model");
-const pack = "0x0235fe85da0560a510cfdd1e0eca805f93a1fe64b6f9da965f528e6f10cf8594";
+const pack = "0x377b4129d3bd62aa5293a17e6a0a29af0777bc0fe966ff892437e3b78f6c2f6d";
 if (!pack) {
     throw new Error('PACKAGE_ID environment variable is not set');
 }

@@ -1,12 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import {Ed25519Keypair} from '@mysten/sui/keypairs/ed25519';
-import { getFullnodeUrl, SuiClient } from '@mysten/sui/client';
 import db from './config/db.config';
-import event_model from './models/event.model';
-import { IEventInfo } from './models/event.model';
-import { setupListeners } from './controllers/exchange.controller';
+import { event_router } from './routes';
 
 db.connect();
 dotenv.config();
@@ -20,42 +16,24 @@ app.get('/', (_, res) => {
 
 app.get('/get_server_env', (_, res) => {
     res.json({
-      GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-      GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI,
-      SUI_PROVER_ENDPOINT: process.env.SUI_PROVER_ENDPOINT,
+        serverPort: process.env.PORT,
+        google_client_id: process.env.GOOGLE_CLIENT_ID,
+        google_redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+        sui_prover_endpoint: process.env.SUI_PROVER_ENDPOINT,
+        dev_secret_key: process.env.SECRET_KEY,
+        dev_package_id: process.env.PACKAGE_ID,
     })
 })
-app.get('/get_all_event_info', (req, res) =>{
-    res.status(200).send(event_model.find());
-});
-app.get('/get_event_info_by_id', (req, res) => {
-    if(req.body.event_id){
-        res.status(200).send(event_model.findOne({event_id: req.body.event_id}));
-    }
-    else{
-        res.status(404).send(`cant not find event id`)
-    }
-});
-app.post('/create_event', (req, res) => {
-    const eventData: IEventInfo = req.body; // Explicitly type req.body as IEventInfo
-    const new_event = new event_model(eventData);
-    new_event.save()
-        .then(() => res.status(201).send('Event created successfully'))
-        .catch((err) => res.status(500).send(`Error creating event: ${err.message}`));
-});
 
-app.post('/sign_transaction', (req, res) => {
-    const client = new SuiClient({url: getFullnodeUrl('testnet')})
-    const keypair = Ed25519Keypair.fromSecretKey(process.env.SECRET_KEY);
-    const {transactionBytes} = req.body;
-     
-    const signature = keypair.signTransaction(transactionBytes);
+app.get('/get_package_id', (_, res) => {
     res.json({
-        signature
-    });
+        package_id: process.env.PACKAGE_ID
+    })
 })
 
+app.get('/v1/event', event_router);
+
 app.listen(process.env.PORT, async () => {
-    await setupListeners();
+    // it setupListeners();
     console.log('connect to server!!!');
 })

@@ -2,7 +2,7 @@ import { EventId, getFullnodeUrl, SuiClient, SuiEvent, SuiEventFilter } from '@m
 import { CONFIG } from '../config/config';
 import { handleEscrowObjects, handleLockObjects } from './exchangeHandler';
 import { Cursor } from '../models/exchange_process.model';
-const pack="0x0235fe85da0560a510cfdd1e0eca805f93a1fe64b6f9da965f528e6f10cf8594";
+const pack="0x377b4129d3bd62aa5293a17e6a0a29af0777bc0fe966ff892437e3b78f6c2f6d";
 
 type SuiEventsCursor = EventId | null | undefined;
 
