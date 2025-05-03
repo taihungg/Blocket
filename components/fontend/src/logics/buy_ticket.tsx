@@ -3,10 +3,11 @@ import { Transaction } from "@mysten/sui/transactions";
 import { useEffect, useState } from "react";
 import styles from "./buy_ticket.module.scss";
 import classNames from "classnames/bind";
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-const package_id = "0xecc735d2613a74d2314a0797585beff45df7c3ddb626323b167fc03d994d38e7";
+// const packageId = "0xecc735d2613a74d2314a0797585beff45df7c3ddb626323b167fc03d994d38e7";
 const workshop_id = "0x3fb5bf45c5274e4ad16009d42f0c9c29155e59ab194199c3039e909f7101db0f";
 
 interface Props {
@@ -19,11 +20,20 @@ export default function BuyTicketButton(props: Props) {
     const client = useSuiClient();
     const [tokenId, setTokenId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [packageId, setPackageId] = useState('');
 
     useEffect(() => {
+        let pack='';
+        const get_package_id = async () => {
+            const data_res = await axios.get('http://localhost:3000/get_package_id');
+            if (data_res.status === 200) {
+                setPackageId(data_res.data.package_id)
+                pack=data_res.data.package_id;
+            }
+        }
+        get_package_id();
         const fetchUserObject = async () => {
             if (!currAccount) return;
-
             try {
                 const ownedObjects = await client.getOwnedObjects({
                     owner: currAccount.address,
@@ -31,12 +41,13 @@ export default function BuyTicketButton(props: Props) {
                 });
 
                 const userObject = ownedObjects.data.find(
-                    (obj) => obj.data?.type === `0x2::coin::Coin<${package_id}::tick::TICK>`
+                    (obj) => obj.data?.type === `0x2::coin::Coin<${pack}::tick::TICK>`
                 );
 
                 if (userObject && userObject.data?.objectId) {
                     setTokenId(userObject.data.objectId);
                 } else {
+                    console.log(pack)
                     console.error("Address doesn't have any TICK token. Mint first!");
                     alert("Please mint TICK token first!");
                 }
@@ -45,7 +56,6 @@ export default function BuyTicketButton(props: Props) {
                 alert("Error fetching TICK token. Please try again.");
             }
         };
-
         fetchUserObject();
     }, [currAccount, client]);
 
@@ -66,7 +76,7 @@ export default function BuyTicketButton(props: Props) {
             tx.setGasBudget(30000000);
 
             tx.moveCall({
-                target: `${package_id}::${props.event_name}::buy_ticket`,
+                target: `${packageId}::${props.event_name}::buy_ticket`,
                 arguments: [
                     tx.object(tokenId),
                     tx.object(workshop_id),
