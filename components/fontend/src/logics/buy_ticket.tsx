@@ -8,7 +8,7 @@ import axios from 'axios';
 const cx = classNames.bind(styles);
 
 // const packageId = "0xecc735d2613a74d2314a0797585beff45df7c3ddb626323b167fc03d994d38e7";
-const workshop_id = "0x3fb5bf45c5274e4ad16009d42f0c9c29155e59ab194199c3039e909f7101db0f";
+const workshop_id = "0x8a222a6f157cc438355afe0285c1149a32d0763b331252632cd73e8d381a7e21";
 
 interface Props {
     event_name: string;

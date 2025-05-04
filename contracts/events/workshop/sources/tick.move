@@ -35,17 +35,16 @@ fun init(witness: TICK, ctx: &mut TxContext){
 const ECoinNotEnough: u64 = 4;
 public fun mint_tick(
     pool: &mut PoolTick, 
-    recipient: address, 
-    coin_sui: &mut coin::Coin<sui::sui::SUI>, 
+    mut coin_sui: coin::Coin<sui::sui::SUI>, 
     amount: u64, 
     ctx: &mut TxContext
-) {
+){
     // Đảm bảo coin_sui có giá trị lớn hơn amount
-    let coin_value = coin::value(coin_sui);
+    let coin_value = coin::value(&coin_sui);
     assert!(coin_value >= amount, ECoinNotEnough);
 
     // Tách coin_sui ra một lượng amount
-    let extracted_coin = coin::split(coin_sui, amount, ctx);
+    let extracted_coin = coin::split(&mut coin_sui, amount, ctx);
 
     // Thêm lượng SUI vừa tách vào pool_sui
     sui::balance::join(&mut pool.pool_sui, extracted_coin.into_balance());
@@ -58,7 +57,9 @@ public fun mint_tick(
     let tick_coin = sui::balance::split<TICK>(&mut pool.pool_tick, tick_amount);
 
     // Chuyển lượng TICK vừa trích cho recipient
-    transfer::public_transfer(sui::coin::from_balance(tick_coin, ctx), recipient);
+    transfer::public_transfer(sui::coin::from_balance(tick_coin, ctx), ctx.sender());
+    transfer::public_transfer(coin_sui, ctx.sender());
+    // coin::from_balance(tick_coin, ctx)
 }
 
 public fun burn_tick(cap: &mut TreasuryCap<TICK>, c: coin::Coin<TICK>): u64{

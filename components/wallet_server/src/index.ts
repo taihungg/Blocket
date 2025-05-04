@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import db from './config/db.config';
 import { event_router } from './routes';
+import { setupListeners } from './controllers/exchange.controller';
 
 db.connect();
 dotenv.config();
@@ -22,6 +23,7 @@ app.get('/get_server_env', (_, res) => {
         sui_prover_endpoint: process.env.SUI_PROVER_ENDPOINT,
         dev_secret_key: process.env.SECRET_KEY,
         dev_package_id: process.env.PACKAGE_ID,
+        dev_pool_tick: process.env.POOL_TICK,
     })
 })
 
@@ -30,10 +32,15 @@ app.get('/get_package_id', (_, res) => {
         package_id: process.env.PACKAGE_ID
     })
 })
+app.get('/get_pool_id', (_, res) => {
+    res.json({
+        pool_id: process.env.POOL_TICK
+    })
+})
 
 app.get('/v1/event', event_router);
 
 app.listen(process.env.PORT, async () => {
-    // it setupListeners();
+    // await setupListeners();
     console.log('connect to server!!!');
 })

@@ -22,13 +22,12 @@ export default function OwnedObjects() {
 
 	useEffect(() => {
 		const get_package_id = async () => {
-			const data_res = await axios.get('http://localhost:3000/get_package_id');
-			if (data_res.status === 200) {
-				setPackageId(data_res.data.packageId)
-			}
+			await axios.get('http://localhost:3000/get_package_id').then(res => {
+                setPackageId(res.data.package_id);
+            }).catch(e => console.log(e))
 		}
 		get_package_id();
-	}, [packageId])
+	}, [])
 
 	const { data } = useSuiClientQuery('getOwnedObjects', {
 		owner: currAccount?.address || '',
@@ -44,6 +43,9 @@ export default function OwnedObjects() {
 		setOffQr(true)
 	}
 	const assets = data.data.filter(obj => (obj.data?.type === `${packageId}::${event_name}::${ticket_name}` || obj.data?.type === `0x2::coin::Coin<${packageId}::tick::TICK>`))
+	data.data.map(obj => {
+		if(obj.data?.type === `${packageId}::${event_name}::${ticket_name}`) console.log(obj.data.objectId)
+	})
 	return (
 		<div className={cx('wrapper')}>
 			<ul className={cx('list-object')}>

@@ -14,7 +14,7 @@ const client_1 = require("@mysten/sui/client");
 const config_1 = require("../config/config");
 const exchangeHandler_1 = require("./exchangeHandler");
 const exchange_process_model_1 = require("../models/exchange_process.model");
-const pack = "0x377b4129d3bd62aa5293a17e6a0a29af0777bc0fe966ff892437e3b78f6c2f6d";
+const pack = process.env.PACKAGE_ID;
 if (!pack) {
     throw new Error('PACKAGE_ID environment variable is not set');
 }
@@ -46,7 +46,7 @@ const executeEventJob = (client, tracker, cursor) => __awaiter(void 0, void 0, v
         if (cursor && (!cursor.txDigest || !cursor.eventSeq)) {
             throw new Error(`Invalid cursor format for tracker ${tracker.type}: ${JSON.stringify(cursor)}`);
         }
-        console.log(`Querying events for tracker ${tracker.type} with cursor:`, cursor);
+        // console.log(`Querying events for tracker ${tracker.type} with cursor:`, cursor);
         const { data, hasNextPage, nextCursor } = yield client.queryEvents({
             query: tracker.filter,
             cursor: cursor || null,

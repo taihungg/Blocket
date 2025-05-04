@@ -26,5 +26,4 @@ router.post('/create_event', (req, res) => {
         .then(() => res.status(201).send('Event created successfully'))
         .catch((err) => res.status(500).send(`Error creating event: ${err.message}`));
 });
-
 export default router;

@@ -68,18 +68,16 @@ function Swap() {
                 if (inputCoin > 0 && tickToken > 0 && tickToken / inputCoin === 10) {
                     if (clientSUI) {
                         const tx = new Transaction();
-                        tx.setGasBudget(3000000);
-                        const [coin] = tx.splitCoins(tx.gas, [tx.pure.u64(3)]);
-                        console.log(coin)
+                        tx.setGasBudget(6000000);
+                        const [coin] = tx.splitCoins(tx.gas, [tx.pure.u64(inputCoin)]);
                         tx.moveCall({
                             target: `${packageId}::tick::mint_tick`,
                             arguments: [
                                 tx.object(poolId),
-                                tx.pure.address(currAccount.address),
                                 coin,
-                                tx.pure.u64(inputCoin),
-                            ],
-                        });
+                                tx.pure.u64(inputCoin)
+                            ]
+                        })
                         signAndExecuteTransaction(
                             {
                                 transaction: tx,

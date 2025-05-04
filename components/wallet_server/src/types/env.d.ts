@@ -13,6 +13,7 @@ declare global {
       SECRET_KEY:string,
       NETWORK: 'mainnet' | 'testnet' | 'devnet',
       PACKAGE_ID: string,
+      POOL_TICK: string,
     }
   }
 }

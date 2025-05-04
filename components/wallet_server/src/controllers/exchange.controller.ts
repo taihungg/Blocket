@@ -2,7 +2,7 @@ import { EventId, getFullnodeUrl, SuiClient, SuiEvent, SuiEventFilter } from '@m
 import { CONFIG } from '../config/config';
 import { handleEscrowObjects, handleLockObjects } from './exchangeHandler';
 import { Cursor } from '../models/exchange_process.model';
-const pack="0x377b4129d3bd62aa5293a17e6a0a29af0777bc0fe966ff892437e3b78f6c2f6d";
+const pack=process.env.PACKAGE_ID;
 
 type SuiEventsCursor = EventId | null | undefined;
 
@@ -55,7 +55,7 @@ const executeEventJob = async (
             throw new Error(`Invalid cursor format for tracker ${tracker.type}: ${JSON.stringify(cursor)}`);
         }
 
-        console.log(`Querying events for tracker ${tracker.type} with cursor:`, cursor);
+        // console.log(`Querying events for tracker ${tracker.type} with cursor:`, cursor);
         const { data, hasNextPage, nextCursor } = await client.queryEvents({
             query: tracker.filter,
             cursor: cursor || null,

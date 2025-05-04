@@ -9,11 +9,11 @@ function Test() {
     const [poolId, setPoolId] = useState('')
     useEffect(() => {
         const fectch = async () => {
-            axios.get('http://localhost:3000/get_package_id').then(res => {
+            await axios.get('http://localhost:3000/get_package_id').then(res => {
                 setPackageId(res.data.package_id);
             }).catch(e => console.log(e))
 
-            axios.get('http://localhost:3000/get_pool_id').then(res => {
+            await axios.get('http://localhost:3000/get_pool_id').then(res => {
                 setPoolId(res.data.pool_id);
             }).catch(e => console.log(e))
         }
@@ -24,26 +24,15 @@ function Test() {
         if (currAccount) {
             const tx = new Transaction();
             tx.setGasBudget(3000000);
-            // const [coin1, coin2] = tx.splitCoins(tx.gas, [tx.pure.u64(2000000), tx.pure.u64(2000000)]);
-            // const res = tx.moveCall({
-            //     target: `${packageId}::tick::mint_tick`,
-            //     arguments: [
-            //         tx.object(poolId),
-            //         tx.pure.address(currAccount?.address),
-            //         coin1,
-            //         tx.pure.u64(1)
-            //     ]
-            // })
-            // tx.transferObjects([coin2, ...res], tx.pure.address('0xf2b8341fc93d683292ba428dccf83ba443c15ee19b9f0719bdd0a7f75218c926'));
-            const [coin1] = tx.splitCoins(tx.gas, [tx.pure.u64(2000000)]);
-            const [lock, key] = tx.moveCall({
-                target: `${packageId}::lock::lock`,
+            const coin = tx.splitCoins(tx.gas, [tx.pure.u64(3)]);
+            tx.moveCall({
+                target: `${packageId}::tick::mint_tick`,
                 arguments: [
-                    coin1,
-                ],
-                typeArguments: ['0x2::coin::Coin<0x2::sui::SUI>']
+                    tx.object(poolId),
+                    coin,
+                    tx.pure.u64(1)
+                ]
             })
-            tx.transferObjects([lock, key], tx.pure.address('0xf2b8341fc93d683292ba428dccf83ba443c15ee19b9f0719bdd0a7f75218c926'));
             sae({
                 transaction: tx,
                 account: currAccount ? currAccount : undefined,
@@ -58,6 +47,7 @@ function Test() {
             alert('fuck u')
         }
     }
+    console.log(packageId, poolId)
     return (
         <div className="wrapper">
             <ConnectButton />

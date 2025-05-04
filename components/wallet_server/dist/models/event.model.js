@@ -12,8 +12,9 @@ const schema = new mongoose_1.default.Schema({
     desciption: { type: String, required: true },
     host: { type: String, required: true },
     endtime: { type: Date, required: true },
-    sum_participant: { type: String, required: true },
+    limited_participant: { type: String, required: true },
     participation: { type: String, required: true },
+    ticket_price: { type: Number, required: true },
 }, { timestamps: true });
 const EventInfo = mongoose_1.default.model('event_info', schema);
 exports.default = EventInfo;
