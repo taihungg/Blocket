@@ -14,6 +14,7 @@ import { UserWallet } from './components/index.ts';
 import Swap from './pages/swap/swap.tsx';
 import Exchange from './pages/exchange/exchange.tsx';
 import Test from './pages/Test/test.tsx';
+import CreateEvent from './pages/event/create.tsx';
 
 
 const queryClient = new QueryClient();
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
   {
     path: '/settings',
     element: <Test />
+  },
+  {
+    path: '/event_create',
+    element: <CreateEvent />
   },
 ])
 createRoot(document.getElementById('root')!).render(

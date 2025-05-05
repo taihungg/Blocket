@@ -10,15 +10,16 @@ const cx = classNames.bind(styles);
 interface props {
     id: string,
     type: string,
+    name?: string,
     description?: string,
     setQrCode: React.Dispatch<React.SetStateAction<JSX.Element | null>>,
     setOffQr: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function ObjectDisplay({ id, type, description = '', setQrCode, setOffQr }: props) {
+function ObjectDisplay({ id, type, name = '', description = '', setQrCode, setOffQr }: props) {
     const currAccount = useCurrentAccount();
     const genQr = async () => {
-        if (currAccount){
+        if (currAccount) {
             const qr_keypair = new Ed25519Keypair();
             const text = `http://127.0.0.1:5500/verify_ticket?ticket_id=${id}&&owner=${currAccount.address}`;
             const encodedText = new TextEncoder().encode(text);
@@ -30,7 +31,7 @@ function ObjectDisplay({ id, type, description = '', setQrCode, setOffQr }: prop
                     value={text + signature} />)
             setOffQr(false);
         }
-        else{
+        else {
             console.error('error when gen new QR --- connect to your wallet first');
         }
     }
@@ -72,13 +73,19 @@ function ObjectDisplay({ id, type, description = '', setQrCode, setOffQr }: prop
                         <p>{type_}</p>
                     </div>
 
-                    <div className={cx('address')}>
+                    {/* <div className={cx('address')}>
                         <h3>Address of owner</h3>
                         <a
                             href={`https://suiscan.xyz/testnet/account/${currAccount.address}`}
                         >{currAccount.address}</a>
-                    </div>
 
+                    </div> */}
+                    {name !== '' &&
+                        <div className={cx('asset-name')}>
+                            <h3>Name</h3>
+                            <a>{name}</a>
+                        </div>
+                    }
                     <div className={cx('get-qrcode-btn')}>
                         <button
                             onClick={getQr}

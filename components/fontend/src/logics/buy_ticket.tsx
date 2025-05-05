@@ -8,10 +8,10 @@ import axios from 'axios';
 const cx = classNames.bind(styles);
 
 // const packageId = "0xecc735d2613a74d2314a0797585beff45df7c3ddb626323b167fc03d994d38e7";
-const workshop_id = "0x8a222a6f157cc438355afe0285c1149a32d0763b331252632cd73e8d381a7e21";
+// const workshop_id = "0x8a222a6f157cc438355afe0285c1149a32d0763b331252632cd73e8d381a7e21";
 
 interface Props {
-    event_name: string;
+    workshop_id:string,
 }
 
 export default function BuyTicketButton(props: Props) {
@@ -21,6 +21,7 @@ export default function BuyTicketButton(props: Props) {
     const [tokenId, setTokenId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [packageId, setPackageId] = useState('');
+    const workshop_id = props.workshop_id;
 
     useEffect(() => {
         let pack='';
@@ -76,7 +77,7 @@ export default function BuyTicketButton(props: Props) {
             tx.setGasBudget(30000000);
 
             tx.moveCall({
-                target: `${packageId}::${props.event_name}::buy_ticket`,
+                target: `${packageId}::workshop::buy_ticket`,
                 arguments: [
                     tx.object(tokenId),
                     tx.object(workshop_id),

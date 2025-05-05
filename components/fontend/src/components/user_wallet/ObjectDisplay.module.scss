@@ -2,12 +2,14 @@ a {
     list-style: none;
     text-decoration: none;
 }
-
-.object, .object-hide {
+.object, .object-hide, .asset-name{
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+}
+
+.object, .object-hide {
     border: 3px solid black;
+    justify-content: space-between;
     // width: 250px;
     width: 100%;
     // height: 300px;
@@ -51,7 +53,15 @@ a {
             }
         }
     }
-
+    .asset-name{
+        margin: 0 auto;
+        h3{
+            margin: 0 auto;
+        }
+        a{
+            font-size: 30px;
+        }
+    }
     .get-qrcode-btn {
         display: flex;
         justify-content: space-between;

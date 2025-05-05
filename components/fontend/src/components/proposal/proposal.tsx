@@ -29,7 +29,7 @@ function Proposal(props: Event_type) {
         endtime,
         sum_participant,
         participation,
-    } = props
+    } = props;
     return (
         <div className={cx('wrapper')}>
             <div className={cx('proposal')}>
