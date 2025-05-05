@@ -4,17 +4,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
-const schema = new mongoose_1.default.Schema({
+// export interface IEventInfo {
+//     event_id: string;
+//     event_type: string;
+//     event_status: string;
+//     title: string;
+//     desciption: string;
+//     host: string;
+//     endtime: Date;
+//     sum_participant: string;
+//     participation: string;
+//     ticket_prices: number,
+//     createdAt?: Date; 
+//     updatedAt?: Date; 
+// }
+// const schema = new mongoose.Schema({
+//     event_id: { type: String, required: true },
+//     event_type: { type: String, required: true },
+//     event_status: { type: String, required: true },
+//     title: { type: String, required: true, maxlength: 50 },
+//     desciption: { type: String, required: true },
+//     host: { type: String, required: true },
+//     endtime: { type: Date, required: true },
+//     limited_participant: { type: String, required: true },
+//     participation: { type: String, required: true },
+//     ticket_price: { type: Number, required: true },
+// }, { timestamps: true });
+// const EventInfo = mongoose.model('event_info', schema);
+const eventSchema = new mongoose_1.default.Schema({
     event_id: { type: String, required: true },
-    event_type: { type: String, required: true },
-    event_status: { type: String, required: true },
-    title: { type: String, required: true, maxlength: 50 },
-    desciption: { type: String, required: true },
-    host: { type: String, required: true },
-    endtime: { type: Date, required: true },
-    limited_participant: { type: String, required: true },
-    participation: { type: String, required: true },
-    ticket_price: { type: Number, required: true },
 }, { timestamps: true });
-const EventInfo = mongoose_1.default.model('event_info', schema);
+const EventInfo = mongoose_1.default.model('event_info', eventSchema);
 exports.default = EventInfo;

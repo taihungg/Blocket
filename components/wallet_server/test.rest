@@ -1,0 +1,9 @@
+POST http://localhost:3000/v1/event/create_event
+Content-Type: application/json
+
+{
+    "event_id":"0x138b72b95db40b750d5f10c858db5bef43bec16b9b464ca6412df892febc8c3c"
+}
+###
+
+GET http://localhost:3000/v1/event/get_all

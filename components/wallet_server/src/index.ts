@@ -38,7 +38,7 @@ app.get('/get_pool_id', (_, res) => {
     })
 })
 
-app.get('/v1/event', event_router);
+app.use('/v1/event', event_router);
 
 app.listen(process.env.PORT, async () => {
     // await setupListeners();
