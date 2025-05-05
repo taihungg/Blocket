@@ -164,7 +164,7 @@ function CreateEvent() {
                 arguments: [
                     tx.pure.address('0xf2b8341fc93d683292ba428dccf83ba443c15ee19b9f0719bdd0a7f75218c926'),
                     tx.pure.u64(3),
-                    tx.pure.u64(64),
+                    tx.pure.u64(10),
                     tx.pure.string('Sui Viet Nam bootcamp'),
                     tx.pure.string('Sui make your day'),
                     tx.pure.string(''),

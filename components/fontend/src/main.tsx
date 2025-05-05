@@ -63,7 +63,7 @@ const router = createBrowserRouter([
   },
 ])
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+  // <StrictMode>
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networks} defaultNetwork='testnet'>
         <WalletProvider autoConnect>
@@ -71,5 +71,5 @@ createRoot(document.getElementById('root')!).render(
         </WalletProvider>
       </SuiClientProvider>
     </QueryClientProvider>
-  </StrictMode>,
+  // </StrictMode>,
 )

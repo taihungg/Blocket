@@ -1,7 +1,11 @@
 .wrapper{
     .create-event{
+        display: flex;
+        align-items: center;
+        justify-content: center;
         .create-button{
-            
+            width: 100px;
+            height: 50px;
         }
     }
 }

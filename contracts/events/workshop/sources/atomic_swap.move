@@ -5,7 +5,7 @@ use sui::object;
 use sui::token::recipient;
 use sui::transfer;
 use sui::tx_context::TxContext;
-use workshop::sui_bootcamp::Sui_ticket;
+use workshop::workshop::Ticket;
 use workshop::tick::TICK;
 
 #[error]
@@ -15,12 +15,12 @@ public struct Atomic_swap has key {
     id: UID,
     sender: address,
     recipient: address,
-    s_object: Sui_ticket,
+    s_object: Ticket,
     r_object: balance::Balance<TICK>,
     pass_price: u64,
 }
 
-public fun create(ticket: Sui_ticket, amount: u64, recipient: address, ctx: &mut TxContext) {
+public fun create(ticket: Ticket, amount: u64, recipient: address, ctx: &mut TxContext) {
     transfer::share_object(Atomic_swap {
         id: object::new(ctx),
         sender: ctx.sender(),

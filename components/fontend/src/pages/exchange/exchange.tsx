@@ -42,6 +42,46 @@ function Exchange() {
             showType: true
         }
     });
+
+    const query = async (digest: string, retries = 5, delay = 2000) => {
+        for (let i = 0; i < retries; i++) {
+            try {
+                console.log(`Attempt ${i + 1} to query transaction with digest: ${digest}`);
+                const response = await client.getTransactionBlock({
+                    digest: digest,
+                    options: {
+                        showEffects: true,
+                        showObjectChanges: true,
+                    },
+                });
+
+                if (response) {
+                    console.log('Transaction Block Response:', response);
+                    if (response.effects?.created?.[0]) {
+                        const createdObjectId = response.effects.created[0].reference.objectId;
+                        alert(
+                            `Your exchange has ID: ${createdObjectId} - send it to your client`
+                        );
+                        // await axios.post('http://localhost:3000/v1/event/create_event', {
+                        //     event_id: createdObjectId
+                        // })
+                    } else {
+                        console.log('No created objects found.');
+                        alert('No created objects found.');
+                    }
+                    return; // Thoát nếu thành công
+                }
+            } catch (error) {
+                console.error(`Error querying transaction (attempt ${i + 1}):`, error);
+                if (i === retries - 1) {
+                    alert('Failed to query transaction after multiple attempts. Please check the digest manually.');
+                    return;
+                }
+                // Đợi trước khi thử lại
+                await new Promise((resolve) => setTimeout(resolve, delay));
+            }
+        }
+    };
     useEffect(() => {
         const get_package_id = async () => {
             const data_res = await axios.get('http://localhost:3000/get_package_id');
@@ -54,7 +94,7 @@ function Exchange() {
     }, [packageId])
 
     // const packageId = "0xecc735d2613a74d2314a0797585beff45df7c3ddb626323b167fc03d994d38e7";
-    const tickets = data?.data.filter(obj => obj.data?.type === `${packageId}::sui_bootcamp::Sui_ticket`)
+    const tickets = data?.data.filter(obj => obj.data?.type === `${packageId}::workshop::Ticket`)
         .map(obj => ({
             id: obj.data?.objectId || '',
             name: obj.data?.type || ''
@@ -64,7 +104,6 @@ function Exchange() {
 
     const handleSubmitTicket = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('hi')
         if (ticketForSell && ticketForSell !== '') {
             const tx = new Transaction();
             tx.setGasBudget(3000000);
@@ -83,7 +122,10 @@ function Exchange() {
                         account: currAccount,
                     },
                     {
-                        onSuccess: (res) => { console.log(res.digest) },
+                        onSuccess: async (res) => { 
+                            console.log(res.digest) 
+                            await query(res.digest);
+                        },
                         onError: (e) => { console.log(e) }
                     }
                 )
@@ -133,8 +175,8 @@ function Exchange() {
                     chain: 'sui:testnet'
                 },
                     {
-                        onSuccess: (res) => {console.log(res.digest)},
-                        onError: (err) => {console.log(err) }
+                        onSuccess: (res) => { console.log(res.digest) },
+                        onError: (err) => { console.log(err) }
                     }
                 )
             }
@@ -185,7 +227,7 @@ function Exchange() {
                                     <label htmlFor="tick-value" className={cx('exchange-input')}>Prices for this ticket</label>
                                     <input type="text" name='tick-value' readOnly value={passPrice + ' TICK'} />
                                     <button type='submit'>Exchange</button>
-                                 </form>
+                                </form>
                             }
                         </div>
                     }
