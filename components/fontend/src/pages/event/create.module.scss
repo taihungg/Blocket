@@ -1,11 +1,100 @@
-.wrapper{
-    .create-event{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        .create-button{
-            width: 100px;
-            height: 50px;
+.wrapper,
+.infomations,
+.create-event,
+.buttons,
+.configure {
+    display: flex;
+    align-items: center;
+}
+
+.container {
+    width: 80%;
+}
+
+.wrapper {
+    width: 800px;
+    height: 680px;
+    margin: auto;
+    border: 1px solid rgb(194, 186, 186);
+    justify-content: center;
+    border-radius: 20px;
+    font-size: 20px;
+    padding-top: 50px;
+    flex-direction: column;
+
+    .create-event {
+        flex-direction: column;
+        border: 0.5px solid rgb(84, 83, 83);
+        border-radius: 10px;
+        width: 90%;
+        padding: 40px 0;
+        margin-bottom: 10px;
+        .container {}
+
+        .triggers {
+            width: 100%;
+            border-radius: 10px;
+            background-color: rgb(45, 126, 255);
+            margin-top: 30px;
+            padding-left: 50px;
+            color: rgba(255, 255, 255, 0.823);
+
+            h3 {}
+
+            p {
+                width: 80%;
+            }
+
+            .buttons {
+                justify-content: space-between;
+
+                button {
+                    width: 200px;
+                    height: 70px;
+                    background-color: rgb(114, 164, 218);
+                    border-radius: 10px;
+                }
+
+                .configure {
+                    padding: 10px 20px;
+
+                    :first-child {
+                        width: 200px;
+                    }
+
+                    .config-button {
+                        width: 100px;
+                        display: flex;
+                        justify-content: space-between;
+                        border: 1px solid rgba(255, 255, 255, 0.538);
+                        border-radius: 5px;
+                        padding: 10px;
+                        box-shadow: 2px 1px;
+                    }
+                }
+            }
         }
+
+    }
+
+    .footer {
+        width: 90%;
+        height: 50px;
+        border-radius: 10px;
+        background-color: rgb(19, 122, 207);
+        margin: 0;
+    }
+}
+
+.infomations {
+    margin-bottom: 2px;
+
+    .label {
+        min-width: 150px;
+    }
+
+    .input-info {
+        border-radius: 15px;
+        height: 45px;
     }
 }

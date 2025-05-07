@@ -15,6 +15,7 @@ import Swap from './pages/swap/swap.tsx';
 import Exchange from './pages/exchange/exchange.tsx';
 import Test from './pages/Test/test.tsx';
 import CreateEvent from './pages/event/create.tsx';
+import NotFound from './pages/NotFount/Notfount.tsx';
 
 
 const queryClient = new QueryClient();
@@ -55,7 +56,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/settings',
-    element: <Test />
+    element: <NotFound />
   },
   {
     path: '/event_create',

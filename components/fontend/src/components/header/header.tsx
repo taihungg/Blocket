@@ -10,7 +10,7 @@ function Header() {
       <div className={cx('header')}>
         <div className={cx('label-functions')}>
           <div className={cx('label')}>
-            <img src='blocket_logo.jpg' />
+            <img src='blocket_main_logo.jpg' />
             <h3>Blocket</h3>
           </div>
           <div className={cx('functions')}>
