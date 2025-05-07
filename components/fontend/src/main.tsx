@@ -6,14 +6,13 @@ import App from './App.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { getFullnodeUrl } from '@mysten/sui/client'
 import { SuiClientProvider, WalletProvider } from '@mysten/dapp-kit'
-import { BrowserRouter, Routes, Route, createBrowserRouter, RouterProvider } from 'react-router';
+import { createBrowserRouter, RouterProvider } from 'react-router';
 import CreateProposal from './pages/proposal/create/create.tsx';
 import { EventDetail } from './pages/index.ts';
 import WalletState from './logics/wallet_state.tsx';
 import { UserWallet } from './components/index.ts';
 import Swap from './pages/swap/swap.tsx';
 import Exchange from './pages/exchange/exchange.tsx';
-import Test from './pages/Test/test.tsx';
 import CreateEvent from './pages/event/create.tsx';
 import NotFound from './pages/NotFount/Notfount.tsx';
 
@@ -47,7 +46,7 @@ const router = createBrowserRouter([
     element: <UserWallet />
   },
   {
-    path: '/buy_tick_token',
+    path: '/swap',
     element: <Swap />
   },
   {

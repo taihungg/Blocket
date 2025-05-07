@@ -5,21 +5,21 @@ import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClientQuery } fr
 import { Transaction } from '@mysten/sui/transactions';
 import axios from 'axios';
 import HeaderLayout from '../../layout/header.layout';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowsUpDown } from '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(styles);
 function Swap() {
     const [packageId, setPackageId] = useState('');
     const [poolId, setPoolId] = useState('');
-    const [inputCoin, setInputCoin] = useState<number>();
+    const [suiCoin, setSuiCoin] = useState<number>(0);
     const [tickToken, setTickToken] = useState<number>(0);
     const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
     const currAccount = useCurrentAccount();
     const [clientSUI, setClientSUI] = useState<string>('');
-
-    // const packageId = '0x0235fe85da0560a510cfdd1e0eca805f93a1fe64b6f9da965f528e6f10cf8594';
-    // const poolId = '0x383fd9b273d82f789e19689dc386d0f821e9f5686a0d81c5736c4e233939ea30';
-
-    // Use `useSuiClientQuery` at the top level
+    //0 : sui -> Tick
+    //1: Tick -> sui
+    const [exchangeMode, setExchangeMode] = useState(0);
     const { data: ownedObjects } = useSuiClientQuery('getOwnedObjects', {
         owner: currAccount?.address || '',
         options: {
@@ -53,29 +53,47 @@ function Swap() {
         }
     }, [ownedObjects]);
 
-    const handleInputCoin = (value: string) => {
-        if (value === '') setTickToken(0);
-        const val = parseInt(value);
-        if (val) {
-            setInputCoin(parseInt(value));
-            setTickToken(parseInt(value) * 10);
+    const sui_to_tick = (value: string) => {
+        if (value === '') {
+            setSuiCoin(0);
+            setTickToken(0);
+        }
+        else {
+            const val = parseFloat(value);
+            if (val) {
+                setSuiCoin(parseFloat(value));
+                setTickToken(parseFloat(value) * 10);
+            }
+        }
+    };
+    const tick_to_sui = (value: string) => {
+        if (value === '') {
+            setSuiCoin(0);
+            setTickToken(0);
+        }
+        else {
+            const val = parseFloat(value);
+            if (val) {
+                setSuiCoin(parseFloat(value) / 10);
+                setTickToken(parseFloat(value));
+            }
         }
     };
 
     const handleSwap = () => {
         if (currAccount) {
-            if (inputCoin && tickToken) {
-                if (inputCoin > 0 && tickToken > 0 && tickToken / inputCoin === 10) {
+            if (suiCoin && tickToken) {
+                if (suiCoin > 0 && tickToken > 0 && tickToken / suiCoin === 10) {
                     if (clientSUI) {
                         const tx = new Transaction();
                         tx.setGasBudget(6000000);
-                        const [coin] = tx.splitCoins(tx.gas, [tx.pure.u64(inputCoin)]);
+                        const [coin] = tx.splitCoins(tx.gas, [tx.pure.u64(suiCoin)]);
                         tx.moveCall({
                             target: `${packageId}::tick::mint_tick`,
                             arguments: [
                                 tx.object(poolId),
                                 coin,
-                                tx.pure.u64(inputCoin)
+                                tx.pure.u64(suiCoin)
                             ]
                         })
                         signAndExecuteTransaction(
@@ -98,7 +116,7 @@ function Swap() {
                     } else {
                         alert('your wallet must has SUI first');
                     }
-                } else if (inputCoin === 0) {
+                } else if (suiCoin === 0) {
                     alert('You must input your coin to imple swap');
                 } else {
                     alert('invalid input coin');
@@ -108,22 +126,55 @@ function Swap() {
             alert('you need connect wallet first!');
         }
     };
+    const handleChangeMode = () => {
+        //0 : sui -> Tick
+        //1: Tick -> sui
+        if (exchangeMode == 0) {
+            setExchangeMode(1)
+        }
+        if (exchangeMode == 1) {
+            setExchangeMode(0)
+        }
+    }
     return (
         <HeaderLayout>
             <div className={cx('wrapper')}>
-                <div className={cx('swap')}>
-                    <div className={cx('token')}>
-                        <h3>Input your coin (SUI)</h3>
-                        <input type="text" onChange={(e) => handleInputCoin(e.target.value)} />
+                {exchangeMode === 0 ?
+                    <div className={cx('swap')}>
+                        <div className={cx('token')}>
+                            <h3>Sui token amount</h3>
+                            <input type="text" value={suiCoin} onChange={(e) => sui_to_tick(e.target.value)} />
+                        </div>
+                        <div className={cx('swap-icon')} onClick={handleChangeMode}>
+                            <FontAwesomeIcon icon={faArrowsUpDown} />
+                        </div>
+
+                        <div className={cx('tick')}>
+                            <h3>Tick token receive</h3>
+                            <input type="text" value={tickToken} readOnly />
+                        </div>
+                        <button className={cx('swap-btn')} onClick={handleSwap}>
+                            Swap
+                        </button>
                     </div>
-                    <div className={cx('tick')}>
-                        <h3>Tick token receive</h3>
-                        <input type="text" value={tickToken} readOnly />
+                    :
+                    <div className={cx('swap')}>
+                        <div className={cx('tick')}>
+                            <h3>Tick token amount</h3>
+                            <input type="text" value={tickToken} onChange={(e) => tick_to_sui(e.target.value)} />
+                        </div>
+                        <div className={cx('swap-icon')} onClick={handleChangeMode}>
+                            <FontAwesomeIcon icon={faArrowsUpDown} />
+                        </div>
+                        <div className={cx('token')}>
+                            <h3>Sui token receive</h3>
+                            <input type="text" value={suiCoin} readOnly />
+                        </div>
+                        <button className={cx('swap-btn')} onClick={handleSwap}>
+                            Swap
+                        </button>
                     </div>
-                    <button className={cx('swap-btn')} onClick={handleSwap}>
-                        Buy
-                    </button>
-                </div>
+                }
             </div>
         </HeaderLayout>
     );

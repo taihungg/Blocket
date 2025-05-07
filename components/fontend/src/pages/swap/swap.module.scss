@@ -5,7 +5,7 @@
 
 .swap,
 .token,
-.tick {
+.tick , .swap-icon{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -19,10 +19,10 @@
     input {
         margin-top: 5px;
         width: 30%;
+        min-width: 500px; 
     }
 }
 .tick{
-    margin-top: 40px;
 }
 .swap-btn{
     margin-top: 20px;
@@ -32,5 +32,16 @@
     &:hover{
         cursor: pointer;
         background-color: azure;
+    }
+}
+.swap-icon{
+    justify-content: center;
+    height: 60px;
+    width: 30px;
+    border-radius: 10px;
+    font-size: 30px;
+    &:hover{
+        cursor: pointer;
+        background-color: rgb(119, 205, 255);
     }
 }
