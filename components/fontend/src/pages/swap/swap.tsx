@@ -12,11 +12,15 @@ const cx = classNames.bind(styles);
 function Swap() {
     const [packageId, setPackageId] = useState('');
     const [poolId, setPoolId] = useState('');
+
     const [suiCoin, setSuiCoin] = useState<number>(0);
     const [tickToken, setTickToken] = useState<number>(0);
+
     const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
     const currAccount = useCurrentAccount();
+
     const [clientSUI, setClientSUI] = useState<string>('');
+    const [clientTICK, setClientTICK] = useState<string>('');
     //0 : sui -> Tick
     //1: Tick -> sui
     const [exchangeMode, setExchangeMode] = useState(0);
@@ -43,14 +47,41 @@ function Swap() {
         get_package_id();
         get_pool_id();
     }, [packageId, poolId])
-    // Update `clientSUI` when `ownedObjects` changes
+
     useEffect(() => {
-        if (ownedObjects) {
+        if (ownedObjects && currAccount) {
             const suiObject = ownedObjects.data?.find(obj => obj.data?.type === '0x2::coin::Coin<0x2::sui::SUI>');
-            console.log(ownedObjects)
+            // console.log(ownedObjects)
             setClientSUI(suiObject?.data?.objectId || '');
-            // console.log(suiObject)
+
+            const tickObject = ownedObjects.data?.filter(obj => obj.data?.type === `0x2::coin::Coin<${packageId}::tick::TICK>`);
+            setClientTICK(tickObject[0]?.data?.objectId || '');
+            const tx = new Transaction();
+            if (tickObject[0]?.data?.objectId) {
+                if (tickObject.length > 1) {
+                    let i = 1;
+                    let RemainCoins = [];
+                    while(tickObject[i]){
+                        RemainCoins.push(tickObject[i].data?.objectId);
+                        i++;
+                    }
+                    tx.mergeCoins(tx.object(tickObject[0].data.objectId), RemainCoins.map(obj => tx.object(obj || '')))
+                    signAndExecuteTransaction({
+                        transaction: tx,
+                        account: currAccount,
+                        chain: 'sui:testnet',
+                    },
+                    {
+                        onSuccess: (res) => {console.log(res.digest)},
+                        onError: (e) => {console.log(e)}
+                    } 
+                )
+            } 
+            else {
+                // console.error('Tick object ID is undefined');
+            }
         }
+    }
     }, [ownedObjects]);
 
     const sui_to_tick = (value: string) => {
@@ -59,11 +90,8 @@ function Swap() {
             setTickToken(0);
         }
         else {
-            const val = parseFloat(value);
-            if (val) {
-                setSuiCoin(parseFloat(value));
-                setTickToken(parseFloat(value) * 10);
-            }
+            setSuiCoin(parseFloat(value)*10000000);
+            setTickToken(parseFloat(value)*100000000);
         }
     };
     const tick_to_sui = (value: string) => {
@@ -72,15 +100,12 @@ function Swap() {
             setTickToken(0);
         }
         else {
-            const val = parseFloat(value);
-            if (val) {
-                setSuiCoin(parseFloat(value) / 10);
-                setTickToken(parseFloat(value));
-            }
+            setSuiCoin(parseFloat(value)*1000000);
+            setTickToken(parseFloat(value)*10000000);
         }
     };
 
-    const handleSwap = () => {
+    const handleSwapSuiToTick = () => {
         if (currAccount) {
             if (suiCoin && tickToken) {
                 if (suiCoin > 0 && tickToken > 0 && tickToken / suiCoin === 10) {
@@ -89,7 +114,7 @@ function Swap() {
                         tx.setGasBudget(6000000);
                         const [coin] = tx.splitCoins(tx.gas, [tx.pure.u64(suiCoin)]);
                         tx.moveCall({
-                            target: `${packageId}::tick::mint_tick`,
+                            target: `${packageId}::tick::swap_sui_tick`,
                             arguments: [
                                 tx.object(poolId),
                                 coin,
@@ -126,6 +151,51 @@ function Swap() {
             alert('you need connect wallet first!');
         }
     };
+    const handleSwapTickToSui = () => {
+        if (currAccount) {
+            if (suiCoin && tickToken) {
+                if (suiCoin > 0 && tickToken > 0 && tickToken / suiCoin === 10) {
+                    if (clientTICK) {
+                        const tx = new Transaction();
+                        tx.setGasBudget(6000000);
+                        tx.moveCall({
+                            target: `${packageId}::tick::swap_tick_sui`,
+                            arguments: [
+                                tx.object(poolId),
+                                tx.object(clientTICK),
+                                tx.pure.u64(suiCoin)
+                            ]
+                        })
+                        signAndExecuteTransaction(
+                            {
+                                transaction: tx,
+                                account: currAccount,
+                                chain: 'sui:testnet',
+                            },
+                            {
+                                onSuccess: (result) => {
+                                    alert('Swap successful');
+                                    console.log(result.digest)
+                                },
+                                onError: (e) => {
+                                    console.log(e)
+                                    alert('Swap fail');
+                                },
+                            }
+                        );
+                    } else {
+                        alert('your wallet must has Tick first');
+                    }
+                } else if (suiCoin === 0) {
+                    alert('You must input your coin to imple swap');
+                } else {
+                    alert('invalid input coin');
+                }
+            }
+        } else {
+            alert('you need connect wallet first!');
+        }
+    };
     const handleChangeMode = () => {
         //0 : sui -> Tick
         //1: Tick -> sui
@@ -136,6 +206,7 @@ function Swap() {
             setExchangeMode(0)
         }
     }
+    console.log(clientSUI, clientTICK)
     return (
         <HeaderLayout>
             <div className={cx('wrapper')}>
@@ -143,7 +214,7 @@ function Swap() {
                     <div className={cx('swap')}>
                         <div className={cx('token')}>
                             <h3>Sui token amount</h3>
-                            <input type="text" value={suiCoin} onChange={(e) => sui_to_tick(e.target.value)} />
+                            <input type="text" value={suiCoin/10000000} onChange={(e) => sui_to_tick(e.target.value)} />
                         </div>
                         <div className={cx('swap-icon')} onClick={handleChangeMode}>
                             <FontAwesomeIcon icon={faArrowsUpDown} />
@@ -151,9 +222,9 @@ function Swap() {
 
                         <div className={cx('tick')}>
                             <h3>Tick token receive</h3>
-                            <input type="text" value={tickToken} readOnly />
+                            <input type="text" value={tickToken/10000000} readOnly />
                         </div>
-                        <button className={cx('swap-btn')} onClick={handleSwap}>
+                        <button className={cx('swap-btn')} onClick={handleSwapSuiToTick}>
                             Swap
                         </button>
                     </div>
@@ -161,16 +232,16 @@ function Swap() {
                     <div className={cx('swap')}>
                         <div className={cx('tick')}>
                             <h3>Tick token amount</h3>
-                            <input type="text" value={tickToken} onChange={(e) => tick_to_sui(e.target.value)} />
+                            <input type="text" value={tickToken/10000000} onChange={(e) => tick_to_sui(e.target.value)} />
                         </div>
                         <div className={cx('swap-icon')} onClick={handleChangeMode}>
                             <FontAwesomeIcon icon={faArrowsUpDown} />
                         </div>
                         <div className={cx('token')}>
                             <h3>Sui token receive</h3>
-                            <input type="text" value={suiCoin} readOnly />
+                            <input type="text" value={suiCoin/10000000} readOnly />
                         </div>
-                        <button className={cx('swap-btn')} onClick={handleSwap}>
+                        <button className={cx('swap-btn')} onClick={handleSwapTickToSui}>
                             Swap
                         </button>
                     </div>

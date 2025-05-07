@@ -66,6 +66,6 @@ published-version = "1"
 
 [env.testnet_proxy]
 chain-id = "4c78adac"
-original-published-id = "0x9cd7c7ace39d096c9f51bf248fd9bd399b9487ef82d97ce0c5985ee976874410"
-latest-published-id = "0x9cd7c7ace39d096c9f51bf248fd9bd399b9487ef82d97ce0c5985ee976874410"
+original-published-id = "0x65c01092aada6293c0e426da7055f8602f291383f37e75774911b1599ff80edd"
+latest-published-id = "0x65c01092aada6293c0e426da7055f8602f291383f37e75774911b1599ff80edd"
 published-version = "1"
