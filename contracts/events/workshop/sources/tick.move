@@ -10,14 +10,14 @@ public struct PoolTick has key {
 fun init(witness: TICK, ctx: &mut TxContext){
     let (mut treasury, metadata) = coin::create_currency(
         witness,
-        6,
+        9,
         b"TICK",
         b"tick token",
         b"using this TICK to buy event tickets",
         option::some(url::new_unsafe_from_bytes(b"")),
         ctx,
     );
-    let tick_mint = sui::coin::mint(&mut treasury, 60000000, ctx);
+    let tick_mint = sui::coin::mint(&mut treasury, 600000000000, ctx);
     let balance_init = tick_mint.into_balance();
 
     transfer::share_object(PoolTick{

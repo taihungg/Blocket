@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsUpDown } from '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(styles);
+export const coin_unit = 1000000000;
 function Swap() {
     const [packageId, setPackageId] = useState('');
     const [poolId, setPoolId] = useState('');
@@ -24,6 +25,8 @@ function Swap() {
     //0 : sui -> Tick
     //1: Tick -> sui
     const [exchangeMode, setExchangeMode] = useState(0);
+
+
     const { data: ownedObjects } = useSuiClientQuery('getOwnedObjects', {
         owner: currAccount?.address || '',
         options: {
@@ -59,6 +62,7 @@ function Swap() {
             const tx = new Transaction();
             if (tickObject[0]?.data?.objectId) {
                 if (tickObject.length > 1) {
+                    alert('you should merge coin first');
                     let i = 1;
                     let RemainCoins = [];
                     while(tickObject[i]){
@@ -90,8 +94,8 @@ function Swap() {
             setTickToken(0);
         }
         else {
-            setSuiCoin(parseFloat(value)*10000000);
-            setTickToken(parseFloat(value)*100000000);
+            setSuiCoin(parseFloat(value));
+            setTickToken(parseFloat(value)*10);
         }
     };
     const tick_to_sui = (value: string) => {
@@ -100,25 +104,25 @@ function Swap() {
             setTickToken(0);
         }
         else {
-            setSuiCoin(parseFloat(value)*1000000);
-            setTickToken(parseFloat(value)*10000000);
+            setSuiCoin(parseFloat(value)/10);
+            setTickToken(parseFloat(value));
         }
     };
 
     const handleSwapSuiToTick = () => {
         if (currAccount) {
             if (suiCoin && tickToken) {
-                if (suiCoin > 0 && tickToken > 0 && tickToken / suiCoin === 10) {
+                if (suiCoin > 0 && tickToken > 0 && tickToken/suiCoin === 10) {
                     if (clientSUI) {
                         const tx = new Transaction();
                         tx.setGasBudget(6000000);
-                        const [coin] = tx.splitCoins(tx.gas, [tx.pure.u64(suiCoin)]);
+                        const [coin] = tx.splitCoins(tx.gas, [tx.pure.u64(suiCoin*coin_unit)]);
                         tx.moveCall({
                             target: `${packageId}::tick::swap_sui_tick`,
                             arguments: [
                                 tx.object(poolId),
                                 coin,
-                                tx.pure.u64(suiCoin)
+                                tx.pure.u64(suiCoin*coin_unit)
                             ]
                         })
                         signAndExecuteTransaction(
@@ -154,7 +158,7 @@ function Swap() {
     const handleSwapTickToSui = () => {
         if (currAccount) {
             if (suiCoin && tickToken) {
-                if (suiCoin > 0 && tickToken > 0 && tickToken / suiCoin === 10) {
+                if (suiCoin > 0 && tickToken > 0 && tickToken/suiCoin === 10) {
                     if (clientTICK) {
                         const tx = new Transaction();
                         tx.setGasBudget(6000000);
@@ -163,7 +167,7 @@ function Swap() {
                             arguments: [
                                 tx.object(poolId),
                                 tx.object(clientTICK),
-                                tx.pure.u64(suiCoin)
+                                tx.pure.u64(tickToken*coin_unit)
                             ]
                         })
                         signAndExecuteTransaction(
@@ -214,7 +218,7 @@ function Swap() {
                     <div className={cx('swap')}>
                         <div className={cx('token')}>
                             <h3>Sui token amount</h3>
-                            <input type="text" value={suiCoin/10000000} onChange={(e) => sui_to_tick(e.target.value)} />
+                            <input type="text" value={suiCoin} onChange={(e) => sui_to_tick(e.target.value)} />
                         </div>
                         <div className={cx('swap-icon')} onClick={handleChangeMode}>
                             <FontAwesomeIcon icon={faArrowsUpDown} />
@@ -222,7 +226,7 @@ function Swap() {
 
                         <div className={cx('tick')}>
                             <h3>Tick token receive</h3>
-                            <input type="text" value={tickToken/10000000} readOnly />
+                            <input type="text" value={tickToken} readOnly />
                         </div>
                         <button className={cx('swap-btn')} onClick={handleSwapSuiToTick}>
                             Swap
@@ -232,14 +236,14 @@ function Swap() {
                     <div className={cx('swap')}>
                         <div className={cx('tick')}>
                             <h3>Tick token amount</h3>
-                            <input type="text" value={tickToken/10000000} onChange={(e) => tick_to_sui(e.target.value)} />
+                            <input type="text" value={tickToken} onChange={(e) => tick_to_sui(e.target.value)} />
                         </div>
                         <div className={cx('swap-icon')} onClick={handleChangeMode}>
                             <FontAwesomeIcon icon={faArrowsUpDown} />
                         </div>
                         <div className={cx('token')}>
                             <h3>Sui token receive</h3>
-                            <input type="text" value={suiCoin/10000000} readOnly />
+                            <input type="text" value={suiCoin} readOnly />
                         </div>
                         <button className={cx('swap-btn')} onClick={handleSwapTickToSui}>
                             Swap

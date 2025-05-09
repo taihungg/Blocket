@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Transaction } from '@mysten/sui/transactions';
 import axios from 'axios';
 import HeaderLayout from '../../layout/header.layout';
+import { coin_unit } from '../swap/swap';
 
 const cx = classNames.bind(styles);
 interface Ticket_type {
@@ -115,7 +116,7 @@ function Exchange() {
                 target: `${packageId}::atomic_swap::create`,
                 arguments: [
                     tx.object(ticketForSell),
-                    tx.pure.u64(ticketPrice),
+                    tx.pure.u64(ticketPrice*coin_unit),
                     tx.pure.address(recipient)
                 ]
             })
@@ -277,7 +278,7 @@ function Exchange() {
                                 exchangeAllow && exchangeId !== '' &&
                                 <form onSubmit={e => handleExchange(e)}>
                                     <label htmlFor="tick-value" className={cx('exchange-input')}>Prices for this ticket</label>
-                                    <input type="text" name='tick-value' readOnly value={passPrice + ' TICK'} />
+                                    <input type="text" name='tick-value' readOnly value={(passPrice/coin_unit) + ' TICK'} />
                                     <button type='submit'>Exchange</button>
                                 </form>
                             }
@@ -293,7 +294,7 @@ function Exchange() {
                                         <label htmlFor="tick-info" className={cx('exchange-input')}>Client</label>
                                         <input type="text" name='tick-info' readOnly value={exchangeClient} />
                                         <label htmlFor="tick-info" className={cx('exchange-input')}>Ticket price</label>
-                                        <input type="text" name='tick-info' readOnly value={passPrice} />
+                                        <input type="text" name='tick-info' readOnly value={passPrice/coin_unit} />
                                         <button type='submit'>Cancel My Exchange</button>
                                     </form>
                                 </div>

@@ -7,6 +7,7 @@ import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWrench } from '@fortawesome/free-solid-svg-icons';
+import { coin_unit } from '../swap/swap';
 
 const cx = classNames.bind(styles);
 
@@ -176,7 +177,7 @@ function CreateEvent() {
                 target: `${packageId}::workshop::create`,
                 arguments: [
                     tx.pure.address(host),
-                    tx.pure.u64(ticketPrice),
+                    tx.pure.u64(ticketPrice*coin_unit),
                     tx.pure.u64(maxTickets),
                     tx.pure.string(eventName),
                     tx.pure.string(description),
