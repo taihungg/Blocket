@@ -45,7 +45,7 @@ function CreateEvent() {
                         alert(
                             `Your event has ID: ${createdObjectId}`
                         );
-                        await axios.post('http://localhost:3000/v1/event/create_event', {
+                        await axios.post('https://blocketserver.vercel.app/v1/event/create_event', {
                             event_id: createdObjectId
                         })
                     } else {
@@ -69,7 +69,7 @@ function CreateEvent() {
     useEffect(() => {
         const fetch = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/get_package_id');
+                const res = await axios.get('https://blocketserver.vercel.app/get_package_id');
                 setPackageId(res.data.package_id);
             } catch (e) {
                 console.error('Error fetching package ID:', e);

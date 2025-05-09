@@ -7,3 +7,5 @@ Content-Type: application/json
 ###
 
 GET http://localhost:3000/v1/event/get_all
+###
+GET https://blocketserver.vercel.app/v1/event/get_all 

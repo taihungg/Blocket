@@ -36,13 +36,13 @@ function Swap() {
 
     useEffect(() => {
         const get_package_id = async () => {
-            const data_res = await axios.get('http://localhost:3000/get_package_id');
+            const data_res = await axios.get('https://blocketserver.vercel.app/get_package_id');
             if (data_res.status === 200) {
                 setPackageId(data_res.data.package_id)
             }
         }
         const get_pool_id = async () => {
-            const data_res = await axios.get('http://localhost:3000/get_pool_id');
+            const data_res = await axios.get('https://blocketserver.vercel.app/get_pool_id');
             if (data_res.status === 200) {
                 setPoolId(data_res.data.pool_id)
             }

@@ -18,7 +18,7 @@ export default function OwnedObjects() {
 	const currAccount = useCurrentAccount();
 	useEffect(() => {
 		const get_package_id = async () => {
-			await axios.get('http://localhost:3000/get_package_id').then(res => {
+			await axios.get('https://blocketserver.vercel.app/get_package_id').then(res => {
 				setPackageId(res.data.package_id);
 			}).catch(e => console.log(e))
 		}

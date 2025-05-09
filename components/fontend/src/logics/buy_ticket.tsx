@@ -26,7 +26,7 @@ export default function BuyTicketButton(props: Props) {
     useEffect(() => {
         let pack='';
         const get_package_id = async () => {
-            const data_res = await axios.get('http://localhost:3000/get_package_id');
+            const data_res = await axios.get('https://blocketserver.vercel.app/get_package_id');
             if (data_res.status === 200) {
                 setPackageId(data_res.data.package_id)
                 pack=data_res.data.package_id;

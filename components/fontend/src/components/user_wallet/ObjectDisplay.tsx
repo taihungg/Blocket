@@ -24,7 +24,7 @@ function ObjectDisplay({ id, type, name = '', description = '', image_url = 'unk
     const genQr = async () => {
         if (currAccount) {
             const qr_keypair = new Ed25519Keypair();
-            const text = `http://127.0.0.1:5500/verify_ticket?ticket_id=${id}&&owner=${currAccount.address}`;
+            const text = `https://blocketserver.vercel.app/verify_ticket?ticket_id=${id}&&owner=${currAccount.address}`;
             const encodedText = new TextEncoder().encode(text);
             const { signature } = await qr_keypair.signPersonalMessage(encodedText);
             localStorage.setItem(`QR_pub_${id}`, qr_keypair.getPublicKey().toBase64());//send to database
