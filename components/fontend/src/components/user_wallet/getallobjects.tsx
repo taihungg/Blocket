@@ -12,15 +12,15 @@ const cx = classNames.bind(styles);
 
 export default function OwnedObjects() {
 	const [packageId, setPackageId] = useState('');
-	const currAccount = useCurrentAccount();
 	const [qr, setQr] = useState<JSX.Element | null>(null);
 	const [offQr, setOffQr] = useState(true);
 
+	const currAccount = useCurrentAccount();
 	useEffect(() => {
 		const get_package_id = async () => {
 			await axios.get('http://localhost:3000/get_package_id').then(res => {
-                setPackageId(res.data.package_id);
-            }).catch(e => console.log(e))
+				setPackageId(res.data.package_id);
+			}).catch(e => console.log(e))
 		}
 		get_package_id();
 	}, [])
@@ -47,9 +47,11 @@ export default function OwnedObjects() {
 				{assets?.map((object: SuiObjectResponse) => (
 					<li key={object.data?.objectId} className={cx('object')}>
 						<ObjectDisplay
+							key={object.data?.objectId}
 							id={object.data?.objectId || 'undetected'}
 							type={object.data?.type || 'undetected'}
 							name={(object.data?.content as any)?.fields?.event_name || ''}
+							image_url={(object.data?.content as any)?.fields?.image_url || ''}
 							setQrCode={setQr} setOffQr={setOffQr} />
 					</li>
 				))}

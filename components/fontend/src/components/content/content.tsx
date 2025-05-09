@@ -56,7 +56,7 @@ function Content() {
                                         event_type: "Workshop",
                                         event_status: "Active",
                                         title: detail.event_name,
-                                        desciption: detail.description,
+                                        description: detail.description,
                                         // host: detail.host,
                                         host: 'Blocket',
                                         endtime: "2",

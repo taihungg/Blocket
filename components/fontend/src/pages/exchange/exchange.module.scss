@@ -2,7 +2,8 @@
 .exchange,
 .modes,
 .ticket-sell-mode,
-.token-buy-mode {
+.token-buy-mode,
+.return-mode {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,6 +20,7 @@
         width: 60%;
         height: 40px;
         font-size: 20px;
+
         &:hover {
             cursor: pointer;
         }
@@ -27,7 +29,6 @@
 
 .modes {
     border: 3px solid black;
-    width: 70%;
     max-width: 330px;
     justify-content: space-between;
     font-size: 25px;
@@ -39,7 +40,7 @@
 
     .ticket-sell-mode {
         border-right: 1px solid black;
-        width: 70%;
+        width: 200px;
 
         &:hover {
             background-color: red;
@@ -51,7 +52,8 @@
     }
 
     .token-buy-mode {
-        width: 30%;
+        width: 200px;
+        border-right: 1px solid black;
 
         &:hover {
             background-color: green;
@@ -59,9 +61,9 @@
     }
 
     .token-color {
-
         background-color: green;
     }
+
 }
 
 
@@ -80,5 +82,7 @@
         }
     }
 }
-
-.ticket-list {}
+.return-box{
+    width: 500px;
+    margin-top: 10px; 
+}

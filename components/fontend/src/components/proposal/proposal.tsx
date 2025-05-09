@@ -12,7 +12,7 @@ export interface Event_type {
     event_type: string,
     event_status: string,
     title: string,
-    desciption: string,
+    description: string,
     host: string,
     endtime: string,
     sum_participant: string,
@@ -24,7 +24,7 @@ function Proposal(props: Event_type) {
         event_type,
         event_status,
         title,
-        desciption,
+        description,
         host,
         endtime,
         sum_participant,
@@ -55,7 +55,7 @@ function Proposal(props: Event_type) {
                     </div>
 
                     <div className={cx('description')}>
-                        {desciption}
+                        {description}
                     </div>
 
                     <div className={cx('author-endtime')}>

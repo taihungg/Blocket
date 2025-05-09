@@ -47,7 +47,7 @@ fun mint_ticket(workshop: &mut Workshop, ctx: &mut TxContext): Ticket {
         id: object::new(ctx),
         event_id: object::uid_to_inner(&workshop.id),
         description: workshop.description,
-        image_url: url::new_unsafe_from_bytes(b""),
+        image_url: workshop.image,
         event_name: workshop.event_name,
     }
 }

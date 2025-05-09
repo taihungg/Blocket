@@ -1,20 +1,29 @@
+.wrapper {
+    height: 330px;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: rgb(205, 207, 208);
+}
+
 a {
     list-style: none;
     text-decoration: none;
 }
-.object, .object-hide, .asset-name{
+
+.object,
+.object-hide,
+.asset-name {
     display: flex;
     flex-direction: column;
 }
 
-.object, .object-hide {
-    border: 3px solid black;
+.object,
+.object-hide {
+    border: 2px solid black;
     justify-content: space-between;
-    // width: 250px;
     width: 100%;
-    // height: 300px;
-    height: 20em;
-    box-shadow: 2px 1px;
+    height: 305px;
+
     .id {
         padding-bottom: 20px;
         border-bottom: 1px solid black;
@@ -53,21 +62,54 @@ a {
             }
         }
     }
-    .asset-name{
+
+    .asset-name {
         margin: 0 auto;
-        h3{
+        text-align: center;
+        h3 {
             margin: 0 auto;
         }
-        a{
+
+        a {
             font-size: 30px;
         }
     }
+
     .get-qrcode-btn {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        :hover{
+        button {
+            border-radius: 5px;
+        }
+
+        :hover {
             cursor: pointer;
         }
+    }
+}
+
+.image {
+    img {
+        width: 100%;
+        height: 300px;
+        border-radius: 10px;
+    }
+}
+
+.object {
+    border-radius: 10px;
+}
+
+.control-detail {
+    width: 100%;
+    height: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    border-radius: 10px;
+    margin-top: 5px;
+
+    &:hover {
+        cursor: pointer;
     }
 }

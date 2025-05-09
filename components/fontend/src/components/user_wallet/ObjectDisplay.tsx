@@ -4,6 +4,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { JSX } from 'react';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useState } from 'react';
 
 
 const cx = classNames.bind(styles);
@@ -12,11 +13,13 @@ interface props {
     type: string,
     name?: string,
     description?: string,
+    image_url: string,
     setQrCode: React.Dispatch<React.SetStateAction<JSX.Element | null>>,
     setOffQr: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function ObjectDisplay({ id, type, name = '', description = '', setQrCode, setOffQr }: props) {
+function ObjectDisplay({ id, type, name = '', description = '', image_url = 'unknow_icon.png', setQrCode, setOffQr }: props) {
+    const [showDetail, setShowDetail] = useState(false);
     const currAccount = useCurrentAccount();
     const genQr = async () => {
         if (currAccount) {
@@ -58,44 +61,47 @@ function ObjectDisplay({ id, type, name = '', description = '', setQrCode, setOf
     if (type_.endsWith('>')) {
         type_ = type_.slice(0, -1);
     }
+    if (type_ === 'TICK') image_url = 'blocket_logo.jpg';
     return (
         currAccount && (
             <div className={cx('wrapper')}>
-                <div className={cx('object')}>
-                    <div className={cx('id')}>
-                        <h3>Id of object</h3>
-                        <a href={`https://suiscan.xyz/testnet/object/${id}/tx-block`}>
-                            {id}
-                        </a>
-                    </div>
-                    <div className={cx('type')}>
-                        <h3>Type of object</h3>
-                        <p>{type_}</p>
-                    </div>
-
-                    {/* <div className={cx('address')}>
-                        <h3>Address of owner</h3>
-                        <a
-                            href={`https://suiscan.xyz/testnet/account/${currAccount.address}`}
-                        >{currAccount.address}</a>
-
-                    </div> */}
-                    {name !== '' &&
-                        <div className={cx('asset-name')}>
-                            <h3>Name</h3>
-                            <a>{name}</a>
+                {
+                    !showDetail ?
+                        <div className={cx('image')} >
+                            {/* image url */}
+                            <img src={image_url || 'unknow_icon.png'} alt="image" />
                         </div>
-                    }
-                    <div className={cx('get-qrcode-btn')}>
-                        <button
-                            onClick={getQr}
-                        >Get QRCode</button>
+                        :
+                        <div className={cx('object')}>
+                            <div className={cx('id')}>
+                                <h3>Id of object</h3>
+                                <a href={`https://suiscan.xyz/testnet/object/${id}/tx-block`} target='blank'>
+                                    {id}
+                                </a>
+                            </div>
+                            <div className={cx('type')}>
+                                <h3>Type of object</h3>
+                                <p>{type_}</p>
+                            </div>
 
-                        <button
-                            onClick={genQr}
-                        >Gen new QRCode</button>
-                    </div>
-                </div>
+                            {name !== '' &&
+                                <div className={cx('asset-name')}>
+                                    <h3>Name</h3>
+                                    <a>{name}</a>
+                                </div>
+                            }
+                            <div className={cx('get-qrcode-btn')}>
+                                <button
+                                    onClick={getQr}
+                                >Get QRCode</button>
+
+                                <button
+                                    onClick={genQr}
+                                >Gen new QRCode</button>
+                            </div>
+                        </div>
+                }
+                <button onClick={() => setShowDetail(!showDetail)} className={cx('control-detail')}>{showDetail? 'detail off': 'show detail'}</button>
             </div>
         )
     );

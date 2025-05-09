@@ -3,6 +3,7 @@
     height: 700px;
     border-bottom: 2px solid green;
     margin: auto;
+    border: 1px solid black;
 }
 .user-wallet, .user-info{
     display: flex;
@@ -12,9 +13,9 @@
 .user-wallet{
     overflow-y: scroll;
     height: 85%;
-    background-color: azure;
+    background-color: rgb(7, 106, 121);
 }
 .user-info{
-    background-color: rgb(239, 255, 255);
+    background-color: rgb(231, 241, 241);
     border-bottom: 2px solid green;
 }

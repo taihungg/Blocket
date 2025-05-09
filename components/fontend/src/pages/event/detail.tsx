@@ -5,19 +5,62 @@ import { faCalendarDays, faVideo, faSmile } from '@fortawesome/free-solid-svg-ic
 import Buy_ticket_button from '../../logics/buy_ticket';
 import { useParams } from 'react-router';
 import HeaderLayout from '../../layout/header.layout';
+import { useEffect, useState } from 'react';
+import { useSuiClient } from '@mysten/dapp-kit';
+import { Event_type } from '../../components/proposal/proposal';
 
 const cx = classNames.bind(styles);
-
+interface Event_detail extends Event_type {
+    image_url: string;
+    ticket_price: string,
+}
 function Detail() {
     const params = useParams();
-    console.log(params);
+    const client = useSuiClient();
+    const [eventDetail, setEventDetail] = useState<Event_detail>();
+    useEffect(() => {
+        const fetchDetailEvent = async () => {
+            if (params.id) {
+                try {
+                    const { data } = await client.getObject({
+                        id: params.id,
+                        options: {
+                            showContent: true
+                        }
+                    })
+                    if (data) {
+                        // console.log(data)
+                        const event = (data.content as any).fields as any;
+                        setEventDetail({
+                            event_id: params.id,
+                            host: event.host,
+                            image_url: event.image,
+                            description: event.description,
+                            title: event.event_name,
+                            event_type: '',
+                            event_status: '',
+                            endtime: '',
+                            sum_participant: '',
+                            participation: '',
+                            ticket_price: event.ticket_price
+                        })
+                    }
+                } catch (error) {
+                    console.log(`show detail id ${params.id} : `, error)
+                }
+            }
+        }
+        fetchDetailEvent();
+    }, [params])
+    // console.log(eventDetail)
     return (
         <HeaderLayout>
             <div className={cx('wrapper')}>
                 <div className={cx('event-detail')}>
                     <div className={cx('detail')}>
                         <div className={cx('title')}>
-                            <h2>Kickstart your career with our first career development session</h2>
+                            <h2>{eventDetail?.title}</h2>
+                            <p> -- Host by -- {eventDetail?.host}</p>
                         </div>
                         <div className={cx('times')}>
                             <div className={cx('date-info')}>
@@ -39,7 +82,7 @@ function Detail() {
                         <div className={cx('status')}>
                             <div className={cx('label')}>
                                 <div className={cx('event-label')}>
-                                    <img src="event-label-avif" alt="event-label-image" />
+                                    <img src={eventDetail?.image_url} alt="event-label-image" />
                                 </div>
                             </div>
                             <div className={cx('thank')}>
@@ -58,7 +101,8 @@ function Detail() {
                         </div>
 
                         <div className={cx('description')}>
-                            <h1>🚀 Kickstart Your Career!</h1>
+                            <h3>{eventDetail?.description}</h3>
+                            {/* <h1>🚀 Kickstart Your Career!</h1>
                             <p>Join our <span className="highlight">First Career Development Session</span> to take your professional journey to the next level!</p>
 
                             <div className="section">
@@ -87,7 +131,7 @@ function Detail() {
                                     <li><strong>🧑‍🏫 Personalized Support (30-40 mins):</strong> Tailored feedback from career expert Adele.</li>
                                     <li><strong>❓ Q&A & Wrap-Up (10 mins):</strong> Open Q&A and final tips.</li>
                                 </ul>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
