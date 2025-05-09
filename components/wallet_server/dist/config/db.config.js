@@ -13,10 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
+const MONGODB_URI = `mongodb+srv://anhdoo:qbkRWE54bmkOuMY0@cluster0.wn3mscg.mongodb.net/blocket?retryWrites=true&w=majority&appName=Cluster0`;
 function connect() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield mongoose_1.default.connect('mongodb://localhost:27017/block_ticket')
+            //  await mongoose.connect('mongodb://localhost:27017/block_ticket')
+            yield mongoose_1.default.connect(MONGODB_URI)
                 .then(() => {
                 console.log("connect successfully !!");
             });
