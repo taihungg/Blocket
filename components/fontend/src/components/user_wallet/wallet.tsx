@@ -8,16 +8,14 @@ import HeaderLayout from '../../layout/header.layout';
 import { useSuiClientQuery } from '@mysten/dapp-kit';
 import { Transaction } from '@mysten/sui/transactions';
 import axios from 'axios';
-import { PACKAGE_ID } from '../../App';
+import { pack } from '../../main';
 
 const cx = classNames.bind(styles);
-// const packageId = PACKAGE_ID;
 const UserWallet: React.FC = () => {
   //sui
   const [packageId, setPackageId] = useState('');
   const currAccount = useCurrentAccount();
   const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
-
 
   const { data: ownedObjects } = useSuiClientQuery('getOwnedObjects', {
     owner: currAccount?.address || '',
@@ -64,9 +62,6 @@ const UserWallet: React.FC = () => {
                 onError: (e) => { console.log(e) }
               }
             )
-          }
-          else {
-            console.error('Tick object ID is undefined');
           }
         }
       }

@@ -41,7 +41,7 @@ export default function OwnedObjects() {
 		setOffQr(true)
 	}
 	const assets = data.data.filter(obj => (obj.data?.type === `${packageId}::workshop::Ticket` || obj.data?.type === `0x2::coin::Coin<${packageId}::tick::TICK>`))
-	console.log(assets)
+	// console.log(assets)
 	return (
 		<div className={cx('wrapper')}>
 			<ul className={cx('list-object')}>
