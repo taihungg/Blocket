@@ -8,8 +8,10 @@ import HeaderLayout from '../../layout/header.layout';
 import { useSuiClientQuery } from '@mysten/dapp-kit';
 import { Transaction } from '@mysten/sui/transactions';
 import axios from 'axios';
+import { PACKAGE_ID } from '../../App';
 
 const cx = classNames.bind(styles);
+// const packageId = PACKAGE_ID;
 const UserWallet: React.FC = () => {
   //sui
   const [packageId, setPackageId] = useState('');
@@ -33,7 +35,6 @@ const UserWallet: React.FC = () => {
     }
     get_package_id();
   }, [packageId])
-  console.log('package: ',packageId)
   useEffect(() => {
     if (ownedObjects && currAccount) {
       const tickObject = ownedObjects.data?.filter(obj => obj.data?.type === `0x2::coin::Coin<${packageId}::tick::TICK>`);

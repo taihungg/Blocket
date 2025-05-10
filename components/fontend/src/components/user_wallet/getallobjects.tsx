@@ -5,10 +5,11 @@ import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { JSX } from 'react';
 import { SuiObjectResponse } from '@mysten/sui/client';
-import axios from 'axios';
+import { PACKAGE_ID } from '../../App';
+import axios from 'axios'
 
 const cx = classNames.bind(styles);
-
+// const packageId = PACKAGE_ID;
 
 export default function OwnedObjects() {
 	const [packageId, setPackageId] = useState('');

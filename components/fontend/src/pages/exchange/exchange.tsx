@@ -3,18 +3,19 @@ import styles from './exchange.module.scss';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { Transaction } from '@mysten/sui/transactions';
-import axios from 'axios';
 import HeaderLayout from '../../layout/header.layout';
 import { coin_unit } from '../swap/swap';
+import { PACKAGE_ID } from '../../App';
 
 const cx = classNames.bind(styles);
 interface Ticket_type {
     id: string;
     name: string;
 }
+const packageId = PACKAGE_ID;
 function Exchange() {
     //package id 
-    const [packageId, setPackageId] = useState('');
+    // const [packageId, setPackageId] = useState('');
     //for UI
     const [ticketMode, setTicketMode] = useState<number>(0);
     //submit
@@ -41,16 +42,16 @@ function Exchange() {
         }
     });
     //useEffect
-    useEffect(() => {
-        const get_package_id = async () => {
-            const data_res = await axios.get('https://blocketserver.vercel.app/get_package_id');
-            if (data_res.status === 200) {
-                setPackageId(data_res.data.package_id)
-            }
-        }
-        get_package_id();
-        if (exchangeId) setExchangeAllow(true);
-    }, [packageId, exchangeId])
+    // useEffect(() => {
+    //     const get_package_id = async () => {
+    //         const data_res = await axios.get('https://blocketserver.vercel.app/get_package_id');
+    //         if (data_res.status === 200) {
+    //             setPackageId(data_res.data.package_id)
+    //         }
+    //     }
+    //     get_package_id();
+    //     if (exchangeId) setExchangeAllow(true);
+    // }, [packageId, exchangeId])
 
     useEffect(() => {
         setExchangeAllow(false);

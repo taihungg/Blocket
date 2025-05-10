@@ -3,36 +3,32 @@ import { Transaction } from "@mysten/sui/transactions";
 import { useEffect, useState } from "react";
 import styles from "./buy_ticket.module.scss";
 import classNames from "classnames/bind";
-import axios from 'axios';
+import { PACKAGE_ID} from "../App";
 
 const cx = classNames.bind(styles);
-
-// const packageId = "0xecc735d2613a74d2314a0797585beff45df7c3ddb626323b167fc03d994d38e7";
-// const workshop_id = "0x8a222a6f157cc438355afe0285c1149a32d0763b331252632cd73e8d381a7e21";
-
 interface Props {
-    workshop_id:string,
+    workshop_id: string,
 }
-
+const packageId = PACKAGE_ID;
 export default function BuyTicketButton(props: Props) {
     const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
     const currAccount = useCurrentAccount();
     const client = useSuiClient();
     const [tokenId, setTokenId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [packageId, setPackageId] = useState('');
+    // const [packageId, setPackageId] = useState('');
     const workshop_id = props.workshop_id;
 
+    // useEffect(() => {
+    //     const get_package_id = async () => {
+    //         const data_res = await axios.get('http://localhost:3000/get_package_id');
+    //         if (data_res.status === 200) {
+    //             setPackageId(data_res.data.package_id)
+    //         }
+    //     }
+    //     get_package_id();
+    // }, []);
     useEffect(() => {
-        let pack='';
-        const get_package_id = async () => {
-            const data_res = await axios.get('https://blocketserver.vercel.app/get_package_id');
-            if (data_res.status === 200) {
-                setPackageId(data_res.data.package_id)
-                pack=data_res.data.package_id;
-            }
-        }
-        get_package_id();
         const fetchUserObject = async () => {
             if (!currAccount) return;
             try {
@@ -42,13 +38,11 @@ export default function BuyTicketButton(props: Props) {
                 });
 
                 const userObject = ownedObjects.data.find(
-                    (obj) => obj.data?.type === `0x2::coin::Coin<${pack}::tick::TICK>`
+                    (obj) => obj.data?.type === `0x2::coin::Coin<${packageId}::tick::TICK>`
                 );
-
                 if (userObject && userObject.data?.objectId) {
                     setTokenId(userObject.data.objectId);
                 } else {
-                    console.log(pack)
                     console.error("Address doesn't have any TICK token. Mint first!");
                     alert("Please mint TICK token first!");
                 }
@@ -58,7 +52,7 @@ export default function BuyTicketButton(props: Props) {
             }
         };
         fetchUserObject();
-    }, [currAccount, client]);
+    }, [currAccount, client])
 
     const handleBuyTicket = async () => {
         if (!currAccount) {

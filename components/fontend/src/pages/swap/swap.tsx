@@ -7,12 +7,15 @@ import axios from 'axios';
 import HeaderLayout from '../../layout/header.layout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsUpDown } from '@fortawesome/free-solid-svg-icons';
+import { PACKAGE_ID, POOL_TICK } from '../../App';
 
 const cx = classNames.bind(styles);
 export const coin_unit = 1000000000;
+const packageId = PACKAGE_ID;
+const poolId = POOL_TICK;
 function Swap() {
-    const [packageId, setPackageId] = useState('');
-    const [poolId, setPoolId] = useState('');
+    // const [packageId, setPackageId] = useState('');
+    // const [poolId, setPoolId] = useState('');
 
     const [suiCoin, setSuiCoin] = useState<number>(0);
     const [tickToken, setTickToken] = useState<number>(0);
@@ -34,22 +37,22 @@ function Swap() {
         },
     });
 
-    useEffect(() => {
-        const get_package_id = async () => {
-            const data_res = await axios.get('https://blocketserver.vercel.app/get_package_id');
-            if (data_res.status === 200) {
-                setPackageId(data_res.data.package_id)
-            }
-        }
-        const get_pool_id = async () => {
-            const data_res = await axios.get('https://blocketserver.vercel.app/get_pool_id');
-            if (data_res.status === 200) {
-                setPoolId(data_res.data.pool_id)
-            }
-        }
-        get_package_id();
-        get_pool_id();
-    }, [packageId, poolId])
+    // useEffect(() => {
+    //     const get_package_id = async () => {
+    //         const data_res = await axios.get('https://blocketserver.vercel.app/get_package_id');
+    //         if (data_res.status === 200) {
+    //             setPackageId(data_res.data.package_id)
+    //         }
+    //     }
+    //     const get_pool_id = async () => {
+    //         const data_res = await axios.get('https://blocketserver.vercel.app/get_pool_id');
+    //         if (data_res.status === 200) {
+    //             setPoolId(data_res.data.pool_id)
+    //         }
+    //     }
+    //     get_package_id();
+    //     get_pool_id();
+    // }, [packageId, poolId])
 
     useEffect(() => {
         if (ownedObjects && currAccount) {

@@ -27,7 +27,8 @@ function Content() {
     useEffect(() => {
         const getEvents = async () => {
             try {
-                const respone = await axios.get('https://blocketserver.vercel.app/v1/event/get_all')
+                // const respone = await axios.get('https://blocketserver.vercel.app/v1/event/get_all')
+                const respone = await axios.get('http://localhost:3000/v1/event/get_all');
                 if (respone.data) {
                     const events = respone.data;
                     events.map(async (ev: { event_id: string }) => {
