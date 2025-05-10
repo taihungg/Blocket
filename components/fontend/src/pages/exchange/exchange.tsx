@@ -81,15 +81,11 @@ function Exchange() {
                 });
 
                 if (response) {
-                    console.log('Transaction Block Response:', response);
                     if (response.effects?.created?.[0]) {
                         const createdObjectId = response.effects.created[0].reference.objectId;
                         alert(
                             `Your exchange has ID: ${createdObjectId} - send it to your client`
                         );
-                        // await axios.post('http://localhost:3000/v1/event/create_event', {
-                        //     event_id: createdObjectId
-                        // })
                     } else {
                         console.log('No created objects found.');
                         alert('No created objects found.');

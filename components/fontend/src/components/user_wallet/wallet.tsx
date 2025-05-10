@@ -16,7 +16,7 @@ const UserWallet: React.FC = () => {
   //sui
   const [packageId, setPackageId] = useState('');
   const currAccount = useCurrentAccount();
-  const {mutate: signAndExecuteTransaction} = useSignAndExecuteTransaction();
+  const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
 
 
   const { data: ownedObjects } = useSuiClientQuery('getOwnedObjects', {
@@ -25,6 +25,7 @@ const UserWallet: React.FC = () => {
       showType: true,
     },
   });
+  const tickObject = ownedObjects?.data?.filter(obj => obj.data?.type === `0x2::coin::Coin<${packageId}::tick::TICK>`);
 
   useEffect(() => {
     const get_package_id = async () => {
@@ -35,37 +36,42 @@ const UserWallet: React.FC = () => {
     }
     get_package_id();
   }, [packageId])
+
   useEffect(() => {
     if (ownedObjects && currAccount) {
-      const tickObject = ownedObjects.data?.filter(obj => obj.data?.type === `0x2::coin::Coin<${packageId}::tick::TICK>`);
-      const tx = new Transaction();
-      if (tickObject[0]?.data?.objectId) {
-        if (tickObject.length > 1) {
-          alert('you should merge coin first');
-          let i = 1;
-          let RemainCoins = [];
-          while (tickObject[i]) {
-            RemainCoins.push(tickObject[i].data?.objectId);
-            i++;
-          }
-          tx.mergeCoins(tx.object(tickObject[0].data.objectId), RemainCoins.map(obj => tx.object(obj || '')))
-          signAndExecuteTransaction({
-            transaction: tx,
-            account: currAccount,
-            chain: 'sui:testnet',
-          },
-            {
-              onSuccess: (res) => { console.log(res.digest) },
-              onError: (e) => { console.log(e) }
+      if (tickObject) {
+        const tx = new Transaction();
+        if (tickObject[0]?.data?.objectId) {
+          if (tickObject.length > 1) {
+            alert('you should merge token first');
+            let i = 1;
+            let RemainCoins = [];
+            while (tickObject[i]) {
+              RemainCoins.push(tickObject[i].data?.objectId);
+              i++;
             }
-          )
-        }
-        else {
-          console.error('Tick object ID is undefined');
+            tx.mergeCoins(tx.object(tickObject[0].data.objectId), RemainCoins.map(obj => tx.object(obj || '')))
+            signAndExecuteTransaction({
+              transaction: tx,
+              account: currAccount,
+              chain: 'sui:testnet',
+            },
+              {
+                onSuccess: (res) => { 
+                  window.location.reload();
+                  console.log(res.digest) 
+                },
+                onError: (e) => { console.log(e) }
+              }
+            )
+          }
+          else {
+            console.error('Tick object ID is undefined');
+          }
         }
       }
     }
-  }, [ownedObjects]);
+  }, [packageId]);
   return (
     <HeaderLayout>
       <div className={cx('wrapper')}>

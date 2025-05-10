@@ -79,7 +79,10 @@ function Swap() {
                         chain: 'sui:testnet',
                     },
                     {
-                        onSuccess: (res) => {console.log(res.digest)},
+                        onSuccess: (res) => {
+                            window.location.reload();
+                            console.log(res.digest)
+                        },
                         onError: (e) => {console.log(e)}
                     } 
                 )
