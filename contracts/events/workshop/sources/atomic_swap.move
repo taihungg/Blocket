@@ -1,15 +1,18 @@
 module workshop::atomic_swap;
+
 use sui::balance;
 use sui::coin::{Coin, from_balance};
 use sui::object;
 use sui::token::recipient;
 use sui::transfer;
 use sui::tx_context::TxContext;
-use workshop::workshop::Ticket;
 use workshop::tick::TICK;
+use workshop::workshop::Ticket;
 
 #[error]
 const ERecipientNotMatch: u64 = 0;
+#[error]
+const ESenderNotMatch: u64 = 1;
 
 public struct Atomic_swap has key {
     id: UID,
@@ -47,19 +50,15 @@ fun imple_swap(atomic_swap: Atomic_swap, ctx: &mut TxContext) {
     transfer::public_transfer(sui::coin::from_balance(r_object, ctx), sender);
 }
 
-public fun join_and_swap(mut atomic_swap: Atomic_swap, coin: Coin<TICK>, ctx: &mut TxContext){
+public fun join_and_swap(mut atomic_swap: Atomic_swap, coin: Coin<TICK>, ctx: &mut TxContext) {
     join_exchange(&mut atomic_swap, coin, ctx);
     imple_swap(atomic_swap, ctx);
 }
 
 public fun return_to_owner(atomic_swap: Atomic_swap, ctx: &mut TxContext) {
-    if (ctx.sender() == atomic_swap.sender || ctx.sender() == atomic_swap.recipient) {
-        let Atomic_swap { id, sender, recipient, s_object, r_object, pass_price } = atomic_swap;
-        object::delete(id);
-        transfer::public_transfer(s_object, sender);
-        transfer::public_transfer(sui::coin::from_balance(r_object, ctx), recipient);
-    }
-    else{
-        abort(1);
-    }
+    assert!(atomic_swap.sender == ctx.sender(), ESenderNotMatch);
+    let Atomic_swap { id, sender, recipient, s_object, r_object, pass_price } = atomic_swap;
+    object::delete(id);
+    transfer::public_transfer(s_object, sender);
+    transfer::public_transfer(sui::coin::from_balance(r_object, ctx), recipient)
 }

@@ -31,6 +31,7 @@ function Content() {
                 // const respone = await axios.get('http://localhost:3000/v1/event/get_all');
                 if (respone.data) {
                     const events = respone.data;
+                    console.log(events);
                     events.map(async (ev: { event_id: string }) => {
                         const eventDetail = await client.getObject({
                             id: ev.event_id,

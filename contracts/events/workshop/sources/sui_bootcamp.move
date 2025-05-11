@@ -59,7 +59,7 @@ public fun verify_ticket(ticket: &Sui_ticket, workshop: &Workshop, ctx: &mut TxC
     assert!(ticket.event_id == object::uid_to_inner(&workshop.id), 0);
     true
 }
-
+ 
 //atomic swap
 
 // public fun exchange(
