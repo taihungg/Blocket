@@ -26,6 +26,7 @@ function Exchange() {
     //exchange
     const [exchangeId, setExchangeId] = useState('');
     const [exchangeAllow, setExchangeAllow] = useState(false);
+    const [eventName, setEventName] = useState('');
     const [passPrice, setPassPrice] = useState(0);
     //return
     const [returnAllow, setReturnAllow] = useState(false);
@@ -56,8 +57,8 @@ function Exchange() {
     useEffect(() => {
         setExchangeAllow(false);
         setReturnAllow(false);
-        if(exchangeId)handleSearchExchange(exchangeId);
-    } , [currAccount])
+        if (exchangeId) handleSearchExchange(exchangeId);
+    }, [currAccount])
 
     //global variables
     const tickets = data?.data.filter(obj => obj.data?.type === `${packageId}::workshop::Ticket`)
@@ -113,7 +114,7 @@ function Exchange() {
                 target: `${packageId}::atomic_swap::create`,
                 arguments: [
                     tx.object(ticketForSell),
-                    tx.pure.u64(ticketPrice*coin_unit),
+                    tx.pure.u64(ticketPrice * coin_unit),
                     tx.pure.address(recipient)
                 ]
             })
@@ -158,6 +159,7 @@ function Exchange() {
                 if (fields.sender === currAccount?.address) {
                     setReturnAllow(true);
                     setExchangeAllow(false);
+
                     const sObject = (data.content.fields as any)?.s_object;
                     const exchange_client = (data.content.fields as any)?.recipient;
                     if (sObject?.fields?.event_name) {
@@ -168,10 +170,17 @@ function Exchange() {
                         console.error('s_object or event_name not found in fields');
                     }
                 }
-                if(fields.sender != currAccount?.address) {
-                    setExchangeId(exchange_id);
+                if (fields.sender != currAccount?.address) {
                     setExchangeAllow(true);
                     setReturnAllow(false);
+
+                    const sObject = (data.content.fields as any)?.s_object;
+                    if (sObject?.fields?.event_name) {
+                        setTicketName(sObject.fields.event_name);
+                        setExchangeId(exchange_id);
+                    } else {
+                        console.error('s_object or event_name not found in fields');
+                    }
                 }
             }
 
@@ -201,7 +210,7 @@ function Exchange() {
                     }
                 )
             }
-            else{
+            else {
                 alert('your TICK is not enough')
             }
         }
@@ -219,16 +228,16 @@ function Exchange() {
                     tx.object(returnId),
                 ]
             });
-           sign_execute({
-            transaction:tx,
-            account: currAccount,
-            chain: 'sui:testnet'
-           },
-           {
-            onSuccess: (result) => {console.log(result.digest)},
-            onError: (err) => {console.error('handleExchange' + err)}
-           }
-        ) 
+            sign_execute({
+                transaction: tx,
+                account: currAccount,
+                chain: 'sui:testnet'
+            },
+                {
+                    onSuccess: (result) => { console.log(result.digest) },
+                    onError: (err) => { console.error('handleExchange' + err) }
+                }
+            )
         }
         else {
             alert('connect wallet first!!')
@@ -274,12 +283,14 @@ function Exchange() {
                             {
                                 exchangeAllow && exchangeId !== '' &&
                                 <form onSubmit={e => handleExchange(e)}>
+                                    <label htmlFor="tick-value" className={cx('exchange-input')}>Event name</label>
+                                    <input type="text" name='tick-value' readOnly value={ticketName} />
                                     <label htmlFor="tick-value" className={cx('exchange-input')}>Prices for this ticket</label>
-                                    <input type="text" name='tick-value' readOnly value={(passPrice/coin_unit) + ' TICK'} />
+                                    <input type="text" name='tick-value' readOnly value={(passPrice / coin_unit) + ' TICK'} />
                                     <button type='submit'>Exchange</button>
                                 </form>
                             }
-                            
+
                             {
                                 returnAllow && returnId !== '' &&
                                 <div className={cx('return-box')}>
@@ -291,7 +302,7 @@ function Exchange() {
                                         <label htmlFor="tick-info" className={cx('exchange-input')}>Client</label>
                                         <input type="text" name='tick-info' readOnly value={exchangeClient} />
                                         <label htmlFor="tick-info" className={cx('exchange-input')}>Ticket price</label>
-                                        <input type="text" name='tick-info' readOnly value={passPrice/coin_unit} />
+                                        <input type="text" name='tick-info' readOnly value={passPrice / coin_unit} />
                                         <button type='submit'>Cancel My Exchange</button>
                                     </form>
                                 </div>

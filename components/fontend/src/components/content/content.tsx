@@ -6,7 +6,7 @@ import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import Proposal, { Event_type } from '../proposal/proposal';
 import { Link } from 'react-router';
 import { useEffect, useState } from 'react';
-import axios, { all } from 'axios';
+import axios from 'axios';
 import { useSuiClient } from '@mysten/dapp-kit';
 
 const cx = classNames.bind(styles);
@@ -27,8 +27,8 @@ function Content() {
     useEffect(() => {
         const getEvents = async () => {
             try {
-                const respone = await axios.get('https://blocketserver.vercel.app/v1/event/get_all')
-                // const respone = await axios.get('http://localhost:3000/v1/event/get_all');
+                // const respone = await axios.get('https://blocketserver.vercel.app/v1/event/get_all')
+                const respone = await axios.get('http://localhost:3000/v1/event/get_all');
                 if (respone.data) {
                     const events = respone.data;
                     console.log(events);

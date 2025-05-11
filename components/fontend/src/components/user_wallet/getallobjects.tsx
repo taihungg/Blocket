@@ -20,6 +20,7 @@ export default function OwnedObjects() {
 	useEffect(() => {
 		const get_package_id = async () => {
 			await axios.get('https://blocketserver.vercel.app/get_package_id').then(res => {
+			// await axios.get('http://localhost:3000/get_package_id').then(res => {
 				setPackageId(res.data.package_id);
 			}).catch(e => console.log(e))
 		}
@@ -41,7 +42,7 @@ export default function OwnedObjects() {
 		setOffQr(true)
 	}
 	const assets = data.data.filter(obj => (obj.data?.type === `${packageId}::workshop::Ticket` || obj.data?.type === `0x2::coin::Coin<${packageId}::tick::TICK>`))
-	// console.log(assets)
+	console.log(assets)
 	return (
 		<div className={cx('wrapper')}>
 			<ul className={cx('list-object')}>
