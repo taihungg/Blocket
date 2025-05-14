@@ -15,6 +15,7 @@ import Swap from './pages/swap/swap.tsx';
 import Exchange from './pages/exchange/exchange.tsx';
 import CreateEvent from './pages/event/create.tsx';
 import NotFound from './pages/NotFount/Notfount.tsx';
+import Collection from './pages/collection/collection.tsx';
 
 
 const queryClient = new QueryClient();
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
   {
     path: '/event_create',
     element: <CreateEvent />
+  },
+  {
+    path: '/collection',
+    element: <Collection />
   },
 ])
 
