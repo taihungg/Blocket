@@ -47,6 +47,7 @@ app.get('/get_pool_id', (_, res) => {
     });
 });
 app.use('/v1/event', routes_1.event_router);
+app.use('/v1/dex', routes_1.dex_router);
 app.listen(process.env.PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     // await setupListeners();
     console.log('connect to server!!!');

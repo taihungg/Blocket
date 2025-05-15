@@ -16,6 +16,7 @@ import Exchange from './pages/exchange/exchange.tsx';
 import CreateEvent from './pages/event/create.tsx';
 import NotFound from './pages/NotFount/Notfount.tsx';
 import Collection from './pages/collection/collection.tsx';
+import MaketPlace from './pages/maketplace/maketplace.tsx';
 
 
 const queryClient = new QueryClient();
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
   {
     path: '/swap',
     element: <Swap />
+  },
+  {
+    path: '/maket_place',
+    element: <MaketPlace />
   },
   {
     path: '/exchange',

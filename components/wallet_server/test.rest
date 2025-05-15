@@ -9,3 +9,11 @@ Content-Type: application/json
 GET http://localhost:3000/v1/event/get_all
 ###
 GET https://blocketserver.vercel.app/v1/event/get_all 
+###
+POST http://localhost:3000/v1/dex/add_user_dex
+Content-Type: application/json
+
+{
+   "owner" : "0xc16bd03e2623f5b7276b717ba42d71545091449e0d2c376d515527298bab3cb6",
+   "dex_id" : "0x02cd9fe166d6d280220fe3943f5309e479afdc288424bf1fefa7dbbbf61b0125"
+}

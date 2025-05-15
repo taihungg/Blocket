@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import db from './config/db.config';
-import { event_router } from './routes';
+import { dex_router, event_router } from './routes';
 import { setupListeners } from './controllers/exchange.controller';
 
 db.connect();
@@ -39,6 +39,7 @@ app.get('/get_pool_id', (_, res) => {
 })
 
 app.use('/v1/event', event_router);
+app.use('/v1/dex', dex_router);
 
 app.listen(process.env.PORT, async () => {
     // await setupListeners();

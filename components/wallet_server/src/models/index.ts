@@ -1,0 +1,1 @@
+export {default as DexObjectModel} from './dex_object.model';
