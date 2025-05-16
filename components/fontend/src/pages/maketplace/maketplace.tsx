@@ -3,7 +3,7 @@ import styles from './maketplace.module.scss';
 import classNames from 'classnames/bind';
 import { Link } from 'react-router';
 import { useEffect, useState } from 'react';
-import axios, { all } from 'axios';
+import axios from 'axios';
 import { PACKAGE_ID } from '../../App';
 import { coin_unit } from '../swap/swap';
 import { Transaction } from '@mysten/sui/transactions';
@@ -94,7 +94,7 @@ function MaketPlace() {
             return [];
         }
         try {
-            const response = await axios.post('http://localhost:3000/v1/dex/get_all_user_dex', {
+            const response = await axios.post('https://blocketserver.vercel.app/v1/dex/get_all_user_dex', {
                 owner,
             });
             if (response.status === 200) {
@@ -111,7 +111,7 @@ function MaketPlace() {
 
     const deleteDexById = async (dex_id: string) => {
         try {
-            const respone = await axios.post('http://localhost:3000/v1/dex/delete_user_dex', {
+            const respone = await axios.post('https://blocketserver.vercel.app/v1/dex/delete_user_dex', {
                 dex_id,
             });
             if (respone.status !== 200) {

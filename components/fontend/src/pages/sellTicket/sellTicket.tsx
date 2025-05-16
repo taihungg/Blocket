@@ -228,7 +228,6 @@ function SellTicket() {
                             onSuccess: async (result) => {
                                 console.log(result.digest);
                                 await query(currAccount.address, result.digest);
-                                redirect('/sell_ticket')
                             },
                             onError: (e) => {
                                 console.error('Handle list for sell function got error: ', e)
@@ -248,7 +247,7 @@ function SellTicket() {
     const createUserDex = async (owner: string, dex_id: string): Promise<void> => {
         if (currAccount) {
             try {
-                const response = await axios.post('http://localhost:3000/v1/dex/add_user_dex', {
+                const response = await axios.post('https://blocketserver.vercel.app/v1/dex/add_user_dex', {
                     owner,
                     dex_id
                 });
