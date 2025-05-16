@@ -211,7 +211,7 @@ function MaketPlace() {
                     <h2 className={`${cx('section-title')} text-3xl font-bold text-gray-800`}>Discover NFTs</h2>
                     <div className="flex space-x-4">
                         <button id="sellNFTBtn" className={`${cx('button-primary')} bg-purple-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-purple-700 transition`}>
-                            <Link to='/exchange'>
+                            <Link to='/sell_ticket'>
                                 <i className="fas fa-plus mr-2"></i>Sell NFT
                             </Link>
                         </button>

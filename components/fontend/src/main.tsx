@@ -17,6 +17,7 @@ import CreateEvent from './pages/event/create.tsx';
 import NotFound from './pages/NotFount/Notfount.tsx';
 import Collection from './pages/collection/collection.tsx';
 import MaketPlace from './pages/maketplace/maketplace.tsx';
+import SellTicket from './pages/sellTicket/sellTicket.tsx';
 
 
 const queryClient = new QueryClient();
@@ -56,8 +57,8 @@ const router = createBrowserRouter([
     element: <MaketPlace />
   },
   {
-    path: '/exchange',
-    element: <Exchange />
+    path: '/sell_ticket',
+    element: <SellTicket />
   },
   {
     path: '/settings',
