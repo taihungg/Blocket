@@ -109,25 +109,6 @@ function MaketPlace() {
         }
     }
 
-    const createUserDex = (owner: string, dex_id: string) => {
-        if (currAccount) {
-            try {
-                axios.post('http://localhost:3000/v1/dex/add_user_dex', {
-                    owner,
-                    dex_id
-                }).then(respone => {
-                    if (respone.status === 201) {
-                        alert('create your Dex successfully');
-                    }
-                    else {
-                        console.log('error in server side');
-                    }
-                }).catch(e => console.error(e))
-            } catch (error) {
-                console.error(error)
-            }
-        }
-    }
     const deleteDexById = async (dex_id: string) => {
         try {
             const respone = await axios.post('http://localhost:3000/v1/dex/delete_user_dex', {

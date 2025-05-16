@@ -104,7 +104,6 @@ function Exchange() {
             }
         }
     };
-
     const handleSubmitTicket = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (ticketForSell && ticketForSell !== '') {

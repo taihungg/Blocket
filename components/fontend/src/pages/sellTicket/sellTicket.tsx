@@ -1,6 +1,14 @@
+import { faPieChart, faTicket } from '@fortawesome/free-solid-svg-icons';
 import styles from './sellTicket.module.scss';
 import classNames from 'classnames/bind';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
+import { PACKAGE_ID } from '../../App';
+import { coin_unit } from '../swap/swap';
+import { Transaction } from '@mysten/sui/transactions';
+import axios from 'axios';
+import { TicketInfo } from '../collection/collection';
+import { redirect, useNavigate } from 'react-router';
 
 const cx = classNames.bind(styles);
 interface detailNFT {
@@ -23,6 +31,13 @@ interface nftDisplay {
     currentprice: string,
 }
 function SellTicket() {
+    //SUI
+    const currAccount = useCurrentAccount();
+    const client = useSuiClient();
+    const { mutate: sign_execute } = useSignAndExecuteTransaction();
+
+    //mock nfts
+
     const nftdatabase = [
         {
             id: "12345",
@@ -79,30 +94,172 @@ function SellTicket() {
             currentprice: "0.8 eth"
         }
     ];
-
+    
+    //variables
+    const navigate = useNavigate();
     //states
     const [detailNFT, setDetailNFT] = useState<detailNFT>();
     const [displayMode, setDisplayMode] = useState(0); //0 -- selection | 1 -- detail
+    const [userTickets, setUserTickets] = useState<TicketInfo[]>([]);
+
+    //form to sell nft
+    const [passPrice, setPassPrice] = useState<number>(0);
+    const [recipient, setRecipient] = useState('');
+
+    //useEffect
+    useEffect(() => {
+        const fetchAllAssets = async () => {
+            const allAssets = await getAllAssets();
+            if (allAssets.length > 0) {
+                setUserTickets(allAssets);
+            }
+        }
+        fetchAllAssets();
+    }, [currAccount])
 
     //functions
-    const handleShowDetail = (nft: nftDisplay) => {
+    const getAllAssets = async () => {
+        let return_value: TicketInfo[] = [];
+        if (currAccount) {
+            let items = await client.getOwnedObjects({
+                owner: currAccount.address,
+                filter: {
+                    StructType: `${PACKAGE_ID}::workshop::Ticket`
+                },
+                options: {
+                    showContent: true,
+                }
+            })
+            return_value = items.data
+                .map((item: any) => item.data?.content?.fields)
+                .filter((fields: any) => fields !== undefined);
+
+            return_value.map(value => {
+                value.id = (value.id as any).id
+            })
+        }
+        return return_value;
+    }
+    const query = async (owner: string, digest: string, retries = 5, delay = 2000) => {
+        for (let i = 0; i < retries; i++) {
+            try {
+                console.log(`Attempt ${i + 1} to query transaction with digest: ${digest}`);
+                const response = await client.getTransactionBlock({
+                    digest: digest,
+                    options: {
+                        showEffects: true,
+                        showObjectChanges: true,
+                    },
+                });
+
+                if (response) {
+                    if (response.effects?.created?.[0]) {
+                        const createdObjectId = response.effects.created[0].reference.objectId;
+                        await createUserDex(owner, createdObjectId);
+                        alert(
+                            `Your exchange has ID: ${createdObjectId} - send it to your client`
+                        );
+                    } else {
+                        console.log('No created objects found.');
+                        alert('No created objects found.');
+                    }
+                    return;
+                }
+            } catch (error) {
+                console.error(`Error querying transaction (attempt ${i + 1}):`, error);
+                if (i === retries - 1) {
+                    alert('Failed to query transaction after multiple attempts. Please check the digest manually.');
+                    return;
+                }
+                // Đợi trước khi thử lại
+                await new Promise((resolve) => setTimeout(resolve, delay));
+            }
+        }
+    };
+    const handleShowDetail = (nft: TicketInfo) => {
         setDisplayMode(1);
-        setDetailNFT({
-            image_url: nft.imageurl,
-            image_des: nft.name,
-            title: nft.name,
-            description: nft.description,
-            collection: nft.collection,
-            owner: nft.owner,
-            id: nft.id,
-            price: nft.currentprice
-        })
+        if (currAccount) {
+            setDetailNFT({
+                image_url: nft.image_url,
+                image_des: nft.event_name,
+                title: nft.event_name,
+                description: nft.description,
+                collection: 'workshop',
+                owner: currAccount.address,
+                id: nft.id,
+                price: 'unknow'
+            })
+        }
         // const nftDetailsElement = document.getElementById('nftdetails');
         // nftDetailsElement?.classList.remove('hidden')
     }
-    const handleListForSell = () => {
-        if(displayMode === 1 && detailNFT){
-            
+    const handleSetPassPrice = (passPrice: string) => {
+        if (passPrice === '') setPassPrice(0);
+        else {
+            const fPrice = parseFloat(passPrice);
+            if (fPrice) {
+                setPassPrice(fPrice);
+            }
+        }
+    }
+    const handleSetRecipient = (recipient: string) => {
+        setRecipient(recipient);
+    }
+    const handleListForSell = (nft: detailNFT) => {
+        if (currAccount) {
+            if (displayMode === 1 && nft) {
+                if (passPrice >= 0 && recipient.length === 66 && parseInt(recipient)) {
+                    const tx = new Transaction();
+                    tx.setGasBudget(3000000);
+                    tx.moveCall({
+                        target: `${PACKAGE_ID}::atomic_swap::create`,
+                        arguments: [
+                            tx.object(nft.id),
+                            tx.pure.u64(passPrice * coin_unit),
+                            tx.pure.address(recipient)
+                        ]
+                    });
+                    sign_execute({
+                        transaction: tx,
+                        account: currAccount,
+                        chain: 'sui:testnet',
+                    },
+                        {
+                            onSuccess: async (result) => {
+                                console.log(result.digest);
+                                await query(currAccount.address, result.digest);
+                                redirect('/sell_ticket')
+                            },
+                            onError: (e) => {
+                                console.error('Handle list for sell function got error: ', e)
+                            }
+                        }
+                    )
+                }
+                else {
+                    if (passPrice < 0) { alert('price must equal or greater than 0') }
+                    if (recipient.length <= 66 || !parseInt(recipient)) { alert('Invalid recipient address') }
+                }
+            }
+            else { }
+
+        }
+    }
+    const createUserDex = async (owner: string, dex_id: string): Promise<void> => {
+        if (currAccount) {
+            try {
+                const response = await axios.post('http://localhost:3000/v1/dex/add_user_dex', {
+                    owner,
+                    dex_id
+                });
+                if (response.status === 201) {
+                    // alert('create your Dex successfully');
+                } else {
+                    console.log('error in server side while creating dex object');
+                }
+            } catch (error) {
+                console.error('from create dex object: ', error);
+            }
         }
     }
     return (
@@ -137,20 +294,20 @@ function SellTicket() {
                             </div>
 
                             <div id="nftgrid" className={`${cx('nft-grid')} grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4`}>
-                                {nftdatabase.map(nft => (
+                                {userTickets.map(nft => (
                                     <div
                                         key={nft.id}
                                         className={`${cx('nft-card')} bg-white rounded-xl p-4 cursor-pointer border border-gray-200 hover:border-gray-300`}
                                         onClick={() => handleShowDetail(nft)}
                                     >
                                         <div className="relative">
-                                            <img src={nft.imageurl} alt={nft.name} className={`w-full h-40 object-cover rounded-lg mb-3`} />
+                                            <img src={nft.image_url} alt={nft.event_name} className={`w-full h-40 object-cover rounded-lg mb-3`} />
                                             <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-                                                ${nft.collection}
+                                                workshop
                                             </div>
                                         </div>
-                                        <h3 className="font-semibold text-gray-800 truncate">${nft.name}</h3>
-                                        <p className="text-sm text-gray-500 mt-1">${nft.currentprice}</p>
+                                        <h3 className="font-semibold text-gray-800 truncate">${nft.event_name}</h3>
+                                        <p className="text-sm text-gray-500 mt-1">(price)</p>
                                     </div>
                                 ))}
                             </div>
@@ -169,10 +326,10 @@ function SellTicket() {
                     </div>
 
                     {/* <!-- nft details section (initially hidden) --> */}
-                    {displayMode === 1 &&
+                    {displayMode === 1 && detailNFT &&
                         <div id="nftdetails" className={`${cx('nft-details')}  fade-in`}>
                             <div className={`${cx('details-header')} border-b border-gray-200 pb-6 mb-6`}>
-                                <h2 className={`${cx('details-title')} text-xl font-semibold text-gray-800 mb-4`}>nft title</h2>
+                                <h2 className={`${cx('details-title')} text-xl font-semibold text-gray-800 mb-4`}>{detailNFT?.title}</h2>
                                 <div className={`${cx('nft-card')} bg-gray-50 rounded-xl p-4 flex flex-col md:flex-row gap-4`}>
                                     <div className="w-full md:w-1/3">
                                         <img id="nftimage" src={detailNFT?.image_url} alt={detailNFT?.image_des} className="w-full h-48 object-cover rounded-lg" />
@@ -187,11 +344,15 @@ function SellTicket() {
                                             </div>
                                             <div>
                                                 <p className="text-gray-500 text-sm">owner</p>
-                                                <p id="nftowner" className="font-medium">{detailNFT?.owner}</p>
+                                                <a href={`https://suiscan.xyz/testnet/account/${detailNFT.owner}`} target='blank'>
+                                                    <p id="nftowner" className="font-medium overflow-hidden">{detailNFT?.owner}</p>
+                                                </a>
                                             </div>
                                             <div>
                                                 <p className="text-gray-500 text-sm">token id</p>
-                                                <p id="nftid" className="font-medium">{detailNFT?.id}</p>
+                                                <a href={`https://suiscan.xyz/testnet/object/${detailNFT.id}`}>
+                                                    <p id="nftid" className="font-medium overflow-hidden">{detailNFT?.id}</p>
+                                                </a>
                                             </div>
                                             <div>
                                                 <p className="text-gray-500 text-sm">current price</p>
@@ -203,18 +364,22 @@ function SellTicket() {
                             </div>
 
                             {/* <!-- listing form --> */}
-                            <form id="sellform">
+                            <div id="sellform">
                                 <div className="mb-6">
                                     <h2 className={`${cx('form-title')} text-xl font-semibold text-gray-800 mb-4`}>listing details</h2>
                                     <div className="mb-4">
-                                        <label htmlFor="listingprice" className="block text-gray-700 font-medium mb-2">{detailNFT?.price} (eth)</label>
+                                        <label htmlFor="listingprice" className="block text-gray-700 font-medium mb-2">pass price (TICK)</label>
                                         <div className="relative">
-                                            <input type="number" id="listingprice" step="0.01" min="0.01"
-                                                className={`${cx('price-input')} w-full px-4 py-2 pl-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 eth-input`} />
+                                            <input
+                                                type="number" id="listingprice" step="0.01" min="0"
+                                                className={`${cx('price-input')} w-full px-4 py-2 pl-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 eth-input`}
+                                                onChange={(e) => handleSetPassPrice(e.target.value)}
+                                            // value={passPrice}
+                                            />
                                         </div>
                                     </div>
 
-                                    <div className="mb-4">
+                                    {/* <div className="mb-4">
                                         <label htmlFor="listingduration" className="block text-gray-700 font-medium mb-2">listing duration</label>
                                         <select id="listingduration"
                                             className={`${cx('duration-select')} w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500`}
@@ -226,6 +391,17 @@ function SellTicket() {
                                             <option value="14">14 days</option>
                                             <option value="30">30 days</option>
                                         </select>
+                                    </div> */}
+
+                                    <div className="mb-4">
+                                        <label htmlFor="listingduration" className="block text-gray-700 font-medium mb-2">Recipient address</label>
+                                        <div className="relative">
+                                            <input
+                                                className={`${cx('recipient-input')} w-full px-4 py-2 pl-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500`}
+                                                onChange={(e) => handleSetRecipient(e.target.value)}
+                                                value={recipient}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
 
@@ -240,14 +416,15 @@ function SellTicket() {
                                     >
                                         back to collection
                                     </button>
-                                    <button type="submit" id="listbtn"
+                                    <button id="listbtn"
                                         className={`${cx('list-button')} px-6 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700`}
-                                        onClick={() => handleListForSell(detailNFT)}
-                                        >
-                                        list nft for sale
+                                        onClick={() => { if (detailNFT) handleListForSell(detailNFT); }}
+                                        disabled={!detailNFT}
+                                    >
+                                        List nft for sale
                                     </button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     }
 

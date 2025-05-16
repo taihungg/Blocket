@@ -14,7 +14,7 @@ interface TickTokenInfo {
     id: string,
     balance: string,
 }
-interface TicketInfo {
+export interface TicketInfo {
     id: string,
     event_id: string,
     event_name: string,
