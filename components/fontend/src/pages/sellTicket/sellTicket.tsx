@@ -1,14 +1,12 @@
-import { faPieChart, faTicket } from '@fortawesome/free-solid-svg-icons';
 import styles from './sellTicket.module.scss';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
-import { PACKAGE_ID } from '../../App';
-import { coin_unit } from '../swap/swap';
+import { PACKAGE_ID, coin_unit } from '../../App';
 import { Transaction } from '@mysten/sui/transactions';
 import axios from 'axios';
 import { TicketInfo } from '../collection/collection';
-import { redirect, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
 const cx = classNames.bind(styles);
 interface detailNFT {
@@ -228,6 +226,7 @@ function SellTicket() {
                             onSuccess: async (result) => {
                                 console.log(result.digest);
                                 await query(currAccount.address, result.digest);
+                                setDisplayMode(0);
                             },
                             onError: (e) => {
                                 console.error('Handle list for sell function got error: ', e)

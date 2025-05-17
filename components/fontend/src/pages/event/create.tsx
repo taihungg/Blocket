@@ -1,13 +1,13 @@
-import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
-import HeaderLayout from '../../layout/header.layout';
-import styles from './create.module.scss';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
-import { Transaction } from '@mysten/sui/transactions';
-import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWrench } from '@fortawesome/free-solid-svg-icons';
-import { coin_unit } from '../swap/swap';
+import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
+import { Transaction } from '@mysten/sui/transactions';
+import HeaderLayout from '../../layout/header.layout';
+import styles from './create.module.scss';
+import { coin_unit } from '../../App';
 
 const cx = classNames.bind(styles);
 

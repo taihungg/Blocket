@@ -1,23 +1,22 @@
-import '@mysten/dapp-kit/dist/index.css';
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { getFullnodeUrl } from '@mysten/sui/client'
-import { SuiClientProvider, WalletProvider } from '@mysten/dapp-kit'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { getFullnodeUrl } from '@mysten/sui/client';
+import { SuiClientProvider, WalletProvider } from '@mysten/dapp-kit';
 import { createBrowserRouter, RouterProvider } from 'react-router';
+import App from './App.tsx';
 import CreateProposal from './pages/proposal/create/create.tsx';
 import { EventDetail } from './pages/index.ts';
 import WalletState from './logics/wallet_state.tsx';
 import { UserWallet } from './components/index.ts';
-import Swap from './pages/swap/swap.tsx';
-import Exchange from './pages/exchange/exchange.tsx';
+import Swap from './pages/swap/Swap.tsx';
 import CreateEvent from './pages/event/create.tsx';
 import NotFound from './pages/NotFount/Notfount.tsx';
 import Collection from './pages/collection/collection.tsx';
 import MaketPlace from './pages/maketplace/maketplace.tsx';
 import SellTicket from './pages/sellTicket/sellTicket.tsx';
+import '@mysten/dapp-kit/dist/index.css';
+import './index.css';
 
 
 const queryClient = new QueryClient();

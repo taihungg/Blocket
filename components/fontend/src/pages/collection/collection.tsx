@@ -1,9 +1,8 @@
-import { ConnectButton, useCurrentAccount, useSuiClient } from '@mysten/dapp-kit';
+import { useCurrentAccount, useSuiClient } from '@mysten/dapp-kit';
 import styles from './collection.module.scss';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
-import { PACKAGE_ID } from '../../App';
-import { coin_unit } from '../swap/swap';
+import { PACKAGE_ID, coin_unit } from '../../App';
 import { Link } from 'react-router';
 
 
