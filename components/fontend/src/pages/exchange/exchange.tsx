@@ -4,7 +4,7 @@ import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { Transaction } from '@mysten/sui/transactions';
 import HeaderLayout from '../../layout/header.layout';
-import { coin_unit } from '../swap/swap';
+import { coin_unit } from '../../App';
 import { PACKAGE_ID } from '../../App';
 
 const cx = classNames.bind(styles);

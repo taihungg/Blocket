@@ -13,7 +13,7 @@ interface dexInfoRespone {
     owner: string,
     dex_id: string
 }
-interface dexInfo {
+export interface dexInfo {
     id: string,
     sender: string,
     sender_object: string,
@@ -34,7 +34,7 @@ function MaketPlace() {
         const fetchAllUserDexInfomation = async () => {
             if (currAccount) {
                 const allUserDex: dexInfoRespone[] = await fetchAllUserDex(currAccount.address);
-                console.log(allUserDex)
+                // console.log(allUserDex)
                 if (allUserDex) {
                     const allUserDexInfomation: dexInfo[] = [];
                     for (const dex of allUserDex) {
@@ -212,7 +212,7 @@ function MaketPlace() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {userDex?.length === 0 && 
+                    {userDex?.length === 0 &&
                         <p>You haven't had any DEX yet</p>
                     }
                     {userDex && userDex.map(dex => (
@@ -229,19 +229,25 @@ function MaketPlace() {
                             <div className="p-4">
                                 <div className="flex justify-between items-start">
                                     <div>
-                                        <h3 className={`${cx('nft-title')} font-bold text-lg`}>{dex.sender_object}</h3>
-                                        <p className="text-gray-500 text-sm">
-                                            {
-                                                dex.recipient.length > 30 ?
-                                                    `${dex.recipient.slice(0, 20)}...${dex.recipient.slice(-10)}` :
-                                                    dex.recipient
-                                            }
+                                        <h3 className={`${cx('nft-title')} font-bold text-lg`}>Dex Id</h3>
+                                        <p className="text-gray-500 text-sm overflow-hidden cursor-pointer"
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(dex.id);
+                                                alert('Copy dex id to clipboard');
+                                            }}>
+                                            {dex.id}
                                         </p>
+                                        <h3 className={`${cx('nft-title')} font-bold text-lg`}>{dex.sender_object}</h3>
+                                        <a href={`https://suiscan.xyz/testnet/account/${dex.recipient}`} target="_blank">
+                                            <p className="text-gray-500 text-sm">
+                                                {
+                                                    dex.recipient.length > 30 ?
+                                                        `${dex.recipient.slice(0, 20)}...${dex.recipient.slice(-10)}` :
+                                                        dex.recipient
+                                                }
+                                            </p>
+                                        </a>
                                     </div>
-                                    {/* <div className="flex items-center text-yellow-400">
-                                        <i className="fas fa-star"></i>
-                                        <span className="ml-1 text-gray-700">4.5</span>
-                                    </div> */}
                                 </div>
                                 <div className="mt-4 flex justify-between items-center">
                                     <button className={`${cx('cancel-btn')} bg-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-red-600 transition`}

@@ -6,7 +6,6 @@ import { PACKAGE_ID, coin_unit } from '../../App';
 import { Transaction } from '@mysten/sui/transactions';
 import axios from 'axios';
 import { TicketInfo } from '../collection/collection';
-import { useNavigate } from 'react-router';
 
 const cx = classNames.bind(styles);
 interface detailNFT {
@@ -94,7 +93,6 @@ function SellTicket() {
     ];
     
     //variables
-    const navigate = useNavigate();
     //states
     const [detailNFT, setDetailNFT] = useState<detailNFT>();
     const [displayMode, setDisplayMode] = useState(0); //0 -- selection | 1 -- detail

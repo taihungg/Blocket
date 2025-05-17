@@ -17,6 +17,7 @@ import MaketPlace from './pages/maketplace/maketplace.tsx';
 import SellTicket from './pages/sellTicket/sellTicket.tsx';
 import '@mysten/dapp-kit/dist/index.css';
 import './index.css';
+import BuyTicket from './pages/buyTicket/BuyTicket.tsx';
 
 
 const queryClient = new QueryClient();
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
   {
     path: '/collection',
     element: <Collection />
+  },
+  {
+    path: '/buy_ticket',
+    element: <BuyTicket />
   },
 ])
 
