@@ -67,21 +67,29 @@ function Dashboard() {
                 {/* Mobile sidebar */}
                 <div className={`${cx('mobile-sidebar')} md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg z-10`}>
                     <div className={`${cx('mobile-nav')} flex justify-around`}>
-                        <a href="#" className={`${cx('mobile-nav-link', 'active')} flex flex-col items-center justify-center p-3 text-blue-500`}>
+                        <a className={`${cx('mobile-nav-link', 'active')} flex flex-col items-center justify-center p-3 text-blue-500`}>
                             <i className="fas fa-tachometer-alt"></i>
-                            <span className="text-xs mt-1">Dashboard</span>
+                            <span className="text-xs mt-1">
+                                <Link to="/">Dashboard</Link>
+                            </span>
                         </a>
-                        <a href="#" className={`${cx('mobile-nav-link')} flex flex-col items-center justify-center p-3 text-gray-500`}>
+                        <a  className={`${cx('mobile-nav-link')} flex flex-col items-center justify-center p-3 text-gray-500`}>
                             <i className="fas fa-exchange-alt"></i>
-                            <span className="text-xs mt-1">Swap</span>
+                            <span className="text-xs mt-1">
+                                <Link to="/swap">Swap</Link>
+                            </span>
                         </a>
-                        <a href="#" className={`${cx('mobile-nav-link')} flex flex-col items-center justify-center p-3 text-gray-500`}>
+                        <a  className={`${cx('mobile-nav-link')} flex flex-col items-center justify-center p-3 text-gray-500`}>
                             <i className="fas fa-wallet"></i>
-                            <span className="text-xs mt-1">Wallet</span>
+                            <span className="text-xs mt-1">
+                                <Link to="/collection">Wallet</Link>
+                            </span>
                         </a>
-                        <a href="#" className={`${cx('mobile-nav-link')} flex flex-col items-center justify-center p-3 text-gray-500`}>
+                        <a className={`${cx('mobile-nav-link')} flex flex-col items-center justify-center p-3 text-gray-500`}>
                             <i className="fas fa-ellipsis-h"></i>
-                            <span className="text-xs mt-1">More</span>
+                            <span className="text-xs mt-1">
+                                <Link to="/more">More</Link>
+                            </span>
                         </a>
                     </div>
                 </div>
