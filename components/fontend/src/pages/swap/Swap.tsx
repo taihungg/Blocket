@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './Swap.module.scss';
 import { useEffect, useState } from 'react';
 import { Transaction } from '@mysten/sui/transactions';
-import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
+import { ConnectButton, useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
 import { coin_unit, PACKAGE_ID, POOL_TICK } from '../../App';
 
 const cx = classNames.bind(styles);
@@ -151,7 +151,8 @@ function Swap() {
                     </div>
                     <div className={`${cx('header-right')} flex space-x-4`}>
                         <button className={`${cx('connect-wallet-btn')} px-4 py-2 rounded-lg bg-white bg-opacity-10 hover:bg-opacity-20 transition`}>
-                            <i className="fas fa-wallet mr-2"></i>Connect Wallet
+                            <i className="fas fa-wallet mr-2"></i>
+                            <ConnectButton />
                         </button>
                         <button className={`${cx('settings-btn')} w-10 h-10 rounded-full bg-white bg-opacity-10 hover:bg-opacity-20 flex items-center justify-center`}>
                             <i className="fas fa-cog"></i>
