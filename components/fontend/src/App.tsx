@@ -1,6 +1,7 @@
 import styles from './App.module.scss';
 import classNames from 'classnames/bind';
 import { Header, Status, Content } from './components';
+import Dashboard from './pages/dashboard/dashboard';
 
 const cx = classNames.bind(styles);
 // const PACKAGE_ID="0xa3d0a8ea1a38276eb0e832097c4a455b6c9ca92929906c3a8ce3976c29ff4452"
@@ -12,7 +13,7 @@ export const coin_unit = 1000000000;
 function App() {
   return (
     <div className={cx('wrapper')}>
-      <div className={cx('header')}>
+      {/* <div className={cx('header')}>
         <Header />
       </div>
       <div className={cx('body')}>
@@ -22,7 +23,8 @@ function App() {
         <div className={cx('content')}>
           <Content/>
         </div>
-      </div>
+      </div> */}
+      <Dashboard/>
     </div>
   )
 }
