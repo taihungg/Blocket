@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Transaction } from '@mysten/sui/transactions';
 import { ConnectButton, useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
 import { coin_unit, PACKAGE_ID, POOL_TICK } from '../../App';
+import { Link } from 'react-router';
 
 const cx = classNames.bind(styles);
 
@@ -28,11 +29,11 @@ function Swap() {
                     filter: {
                         StructType: `0x2::coin::Coin<${PACKAGE_ID}::tick::TICK>`
                     },
-                    options:{
+                    options: {
                         showContent: true
                     }
                 });
-                if(tokens){
+                if (tokens) {
                     setClientTICK(tokens.data[0].data?.objectId ?? '')
                 }
             }
@@ -144,7 +145,14 @@ function Swap() {
         <div className={`${cx('wrapper', 'gradient-bg')} min-h-screen  text-white font-sans`}>
             <div className={`${cx('container')} mx-auto px-4 py-8`}>
                 {/* <!-- Header --> */}
-                <header className={`${cx('header')} flex justify-between items-center mb-8`}>
+                <header className={`${cx('header')}  flex justify-between items-center mb-8`}>
+
+                    <div className='flex items-center border border-blue-600 rounded-lg p-2 '>
+                        <i className="fas fa-home text-2xl mr-2"></i>
+                        <Link to='/'>
+                            <h1 className={`${cx('title')} text-2xl font-bold cursor-pointer`}> Dash board</h1>
+                        </Link>
+                    </div>
                     <div className={`${cx('header-left')} flex items-center`}>
                         <i className="fas fa-exchange-alt text-2xl mr-2"></i>
                         <h1 className={`${cx('title')} text-2xl font-bold`}>CryptoSwap</h1>
@@ -152,7 +160,9 @@ function Swap() {
                     <div className={`${cx('header-right')} flex space-x-4`}>
                         <button className={`${cx('connect-wallet-btn')} px-4 py-2 rounded-lg bg-white bg-opacity-10 hover:bg-opacity-20 transition`}>
                             <i className="fas fa-wallet mr-2"></i>
-                            <ConnectButton />
+                            {currAccount ?
+                                currAccount.address.length > 10 ? currAccount.address.slice(0, 6) + '...' + currAccount.address.slice(-4) : currAccount.address
+                                : 'not connected'}
                         </button>
                         <button className={`${cx('settings-btn')} w-10 h-10 rounded-full bg-white bg-opacity-10 hover:bg-opacity-20 flex items-center justify-center`}>
                             <i className="fas fa-cog"></i>

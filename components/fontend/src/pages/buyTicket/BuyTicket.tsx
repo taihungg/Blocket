@@ -6,7 +6,6 @@ import { dexInfo } from '../maketplace/maketplace';
 import { coin_unit, PACKAGE_ID } from '../../App';
 import { Transaction } from '@mysten/sui/transactions';
 import { TicketInfo } from '../collection/collection';
-import { pack } from '../../main';
 
 const cx = classNames.bind(styles);
 interface ExchangeResult {

@@ -1,14 +1,83 @@
 import { Link } from 'react-router';
 import styles from './dashboard.module.scss';
 import classNames from 'classnames/bind';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { ConnectButton, useSuiClient } from '@mysten/dapp-kit';
+
 const cx = classNames.bind(styles);
+interface DisplayEvent {
+    id: string;
+    title: string;
+    description: string;
+    date: string;
+    event_type: string;
+    host: string;
+    image_url: string;
+    location?: string;
+    ticket_price?: string;
+    people_joined?: string;
+    max_tickets?: string;
+}
 function Dashboard() {
+    //sui
+    const client = useSuiClient();
+
+    //states
+    const [events, setEvents] = useState<DisplayEvent[]>([]);
+    const [currEvent, setCurrEvent] = useState<DisplayEvent | null>(null);
+
+    //useEffect to get all events and set them to state
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                let eventIds: string[] = [];
+                let events_info: DisplayEvent[] = [];
+
+                const response = await axios.get('https://blocketserver.vercel.app/v1/event/get_all'); // Replace with your API endpoint
+                response.data.forEach((element: { event_id: string }) => {
+                    eventIds.push(element.event_id);
+                });
+                for (let i = 0; i < eventIds.length; i++) {
+                    const events_data = await client.getObject({
+                        id: eventIds[i],
+                        options: {
+                            showContent: true,
+                        }
+                    });
+                    console.log('events_data', events_data);
+                    if (events_data) {
+                        events_info.push({
+                            id: (events_data.data?.content as any).fields.id.id,
+                            title: (events_data.data?.content as any).fields.event_name,
+                            description: (events_data.data?.content as any).fields.description,
+                            date: (events_data.data?.content as any).fields.date || 'Jun 28',
+                            event_type: (events_data.data?.content as any).fields.event_type || 'meetup',
+                            host: (events_data.data?.content as any).fields.host,
+                            image_url: (events_data.data?.content as any).fields.image,
+                        });
+                    }
+                }
+                setEvents(events_info);
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            }
+        };
+
+        fetchEvents();
+    }, [])
     function closeModal() {
         // throw new Error('Function not implemented.');
+        document.getElementById('eventModal')?.classList.add('hidden');
     }
 
-    function showEventDetails() {
+    function showEventDetails(eventId: string) {
         // throw new Error('Function not implemented.');
+        document.getElementById('eventModal')?.classList.remove('hidden');
+        const event = events.find((event) => event.id === eventId);
+        if (event) {
+            setCurrEvent(event);
+        }
     }
 
     return (
@@ -26,30 +95,30 @@ function Dashboard() {
                         </div>
                         <div className="flex flex-col flex-grow px-4 py-4 overflow-y-auto">
                             <nav className={`${cx('nav')} flex-1 space-y-2`}>
-                                <a id="dashboard-tab" className={`${cx('nav-link', 'active')} flex items-center px-4 py-3 text-sm font-medium rounded-md bg-blue-900 text-white`}>
+                                <div id="dashboard-tab" className={`${cx('nav-link', 'active')} flex items-center px-4 py-3 text-sm font-medium rounded-md bg-blue-900 text-white`}>
                                     <i className="fas fa-tachometer-alt mr-3"></i>
                                     <Link to="/">Dashboard</Link>
-                                </a>
-                                <a id="swap-tab" className={`${cx('nav-link')} flex items-center px-4 py-3 text-sm font-medium rounded-md text-blue-200 hover:bg-blue-800 hover:text-white`}>
+                                </div>
+                                <div id="swap-tab" className={`${cx('nav-link')} flex items-center px-4 py-3 text-sm font-medium rounded-md text-blue-200 hover:bg-blue-800 hover:text-white`}>
                                     <i className="fas fa-exchange-alt mr-3"></i>
                                     <Link to="/swap">Swap</Link>
-                                </a>
-                                <a id="wallet-tab" className={`${cx('nav-link')} flex items-center px-4 py-3 text-sm font-medium rounded-md text-blue-200 hover:bg-blue-800 hover:text-white`}>
+                                </div>
+                                <div id="wallet-tab" className={`${cx('nav-link')} flex items-center px-4 py-3 text-sm font-medium rounded-md text-blue-200 hover:bg-blue-800 hover:text-white`}>
                                     <i className="fas fa-wallet mr-3"></i>
                                     <Link to="/collection">My wallet</Link>
-                                </a>
-                                <a id="market-tab" className={`${cx('nav-link')} flex items-center px-4 py-3 text-sm font-medium rounded-md text-blue-200 hover:bg-blue-800 hover:text-white`}>
+                                </div>
+                                <div id="market-tab" className={`${cx('nav-link')} flex items-center px-4 py-3 text-sm font-medium rounded-md text-blue-200 hover:bg-blue-800 hover:text-white`}>
                                     <i className="fas fa-chart-line mr-3"></i>
-                                    <Link to="/maket_place">Market</Link>
-                                </a>
-                                <a id="events-tab" className={`${cx('nav-link')} flex items-center px-4 py-3 text-sm font-medium rounded-md text-blue-200 hover:bg-blue-800 hover:text-white`}>
+                                    <Link to="/market">Market</Link>
+                                </div>
+                                <div id="events-tab" className={`${cx('nav-link')} flex items-center px-4 py-3 text-sm font-medium rounded-md text-blue-200 hover:bg-blue-800 hover:text-white`}>
                                     <i className="fas fa-calendar-alt mr-3"></i>
                                     <Link to="/events">Events</Link>
-                                </a>
-                                <a id="create-event-tab" className={`${cx('nav-link')} flex items-center px-4 py-3 text-sm font-medium rounded-md text-blue-200 hover:bg-blue-800 hover:text-white`}>
+                                </div>
+                                <div id="create-event-tab" className={`${cx('nav-link')} flex items-center px-4 py-3 text-sm font-medium rounded-md text-blue-200 hover:bg-blue-800 hover:text-white`}>
                                     <i className="fas fa-plus-circle mr-3"></i>
                                     <Link to="/event_create">Create Event</Link>
-                                </a>
+                                </div>
                             </nav>
                         </div>
                         <div className={`${cx('profile')} p-4 border-t border-blue-800`}>
@@ -67,30 +136,36 @@ function Dashboard() {
                 {/* Mobile sidebar */}
                 <div className={`${cx('mobile-sidebar')} md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg z-10`}>
                     <div className={`${cx('mobile-nav')} flex justify-around`}>
-                        <a className={`${cx('mobile-nav-link', 'active')} flex flex-col items-center justify-center p-3 text-blue-500`}>
+                        <div className={`${cx('mobile-nav-link', 'active')} flex flex-col items-center justify-center p-3 text-blue-500`}>
                             <i className="fas fa-tachometer-alt"></i>
                             <span className="text-xs mt-1">
                                 <Link to="/">Dashboard</Link>
                             </span>
-                        </a>
-                        <a  className={`${cx('mobile-nav-link')} flex flex-col items-center justify-center p-3 text-gray-500`}>
+                        </div>
+                        <div className={`${cx('mobile-nav-link')} flex flex-col items-center justify-center p-3 text-gray-500`}>
                             <i className="fas fa-exchange-alt"></i>
                             <span className="text-xs mt-1">
                                 <Link to="/swap">Swap</Link>
                             </span>
-                        </a>
-                        <a  className={`${cx('mobile-nav-link')} flex flex-col items-center justify-center p-3 text-gray-500`}>
+                        </div>
+                        <div className={`${cx('mobile-nav-link')} flex flex-col items-center justify-center p-3 text-gray-500`}>
                             <i className="fas fa-wallet"></i>
                             <span className="text-xs mt-1">
                                 <Link to="/collection">Wallet</Link>
                             </span>
-                        </a>
-                        <a className={`${cx('mobile-nav-link')} flex flex-col items-center justify-center p-3 text-gray-500`}>
-                            <i className="fas fa-ellipsis-h"></i>
+                        </div>
+                        <div className={`${cx('mobile-nav-link')} flex flex-col items-center justify-center p-3 text-gray-500`}>
+                            <i className="fas fa-shop"></i>
                             <span className="text-xs mt-1">
-                                <Link to="/more">More</Link>
+                                <Link to="/market">Market</Link>
                             </span>
-                        </a>
+                        </div>
+                        <div className={`${cx('mobile-nav-link')} flex flex-col items-center justify-center p-3 text-gray-500`}>
+                            <i className="fas fa-plus-circle"></i>
+                            <span className="text-xs mt-1">
+                                <Link to="/create_event">Create Event</Link>
+                            </span>
+                        </div>
                     </div>
                 </div>
 
@@ -115,13 +190,14 @@ function Dashboard() {
                             <button className={`${cx('notification-btn')} p-1 text-gray-400 rounded-full hover:text-gray-500 focus:outline-none`}>
                                 <i className="fas fa-bell"></i>
                             </button>
-                            <div className={`${cx('user-menu')} ml-3 relative`}>
+                            <div className={`${cx('user-menu')} ml-3 mr-3 relative`}>
                                 <div>
                                     <button className={`${cx('user-menu-btn')} flex items-center max-w-xs text-sm rounded-full focus:outline-none`}>
                                         <img className={`${cx('user-avatar')} w-8 h-8 rounded-full`} src="https://randomuser.me/api/portraits/women/44.jpg" alt="User avatar" />
                                     </button>
                                 </div>
                             </div>
+                            <ConnectButton />
                         </div>
                     </div>
 
@@ -283,7 +359,7 @@ function Dashboard() {
                                 </div>
 
                                 {/* <!-- Upcoming Events --> */}
-                                <div className="bg-white rounded-lg shadow overflow-hidden card-hover transition duration-300">
+                                <div className="bg-white rounded-lg shadow overflow-scroll card-hover transition duration-300 h-96">
                                     <div className="p-6">
                                         <div className="flex justify-between items-center mb-4">
                                             <h2 className="text-lg font-semibold text-gray-800">Upcoming Events</h2>
@@ -291,7 +367,29 @@ function Dashboard() {
                                         </div>
 
                                         <div className="space-y-4">
-                                            {/* <!-- Event 1 --> */}
+                                            {/* <!-- Events display --> */}
+                                            {events.map((event) => (
+                                                <div key={event.id} className="event-card bg-gray-50 rounded-lg p-4 cursor-pointer hover:bg-gray-100 transition duration-300"
+                                                    onClick={() => showEventDetails(event.id)}
+                                                >
+                                                    <div className="flex justify-between items-start">
+                                                        <div>
+                                                            <div className="flex items-center mb-1">
+                                                                <h3 className="text-md font-medium text-gray-800">{event.title}</h3>
+                                                                <span className="event-badge bg-blue-100 text-blue-800 rounded-full ml-2">{event.event_type}</span>
+                                                            </div>
+                                                            <p className="text-xs text-gray-500 mb-2">
+                                                                Hosted by {event.host.slice(0, 20)}...{event.host.slice(-5)}
+                                                            </p>
+                                                        </div>
+                                                        <div className="text-xs text-gray-500">
+                                                            <i className="far fa-calendar-alt mr-1"></i> {event.date}
+                                                        </div>
+                                                    </div>
+                                                    <p className="text-sm text-gray-600 line-clamp-2 overflow-hidden">{event.description}</p>
+                                                </div>
+                                            ))}
+
                                             <div className="event-card bg-gray-50 rounded-lg p-4"
                                             // onClick={() => showEventDetails('event1')}
                                             >
@@ -310,7 +408,6 @@ function Dashboard() {
                                                 <p className="text-sm text-gray-600 line-clamp-2">The largest gathering of crypto enthusiasts discussing the future of blockchain technology and decentralized finance.</p>
                                             </div>
 
-                                            {/* <!-- Event 2 --> */}
                                             <div className="event-card bg-gray-50 rounded-lg p-4"
                                             // onClick={() => showEventDetails('event2')}
                                             >
@@ -329,7 +426,6 @@ function Dashboard() {
                                                 <p className="text-sm text-gray-600 line-clamp-2">Learn how to create, mint and sell your own NFTs from industry experts in this hands-on workshop.</p>
                                             </div>
 
-                                            {/* <!-- Event 3 --> */}
                                             <div className="event-card bg-gray-50 rounded-lg p-4"
                                             // onClick={() => showEventDetails('event3')}
                                             >
@@ -347,9 +443,47 @@ function Dashboard() {
                                                 </div>
                                                 <p className="text-sm text-gray-600 line-clamp-2">Monthly gathering of DeFi enthusiasts to discuss the latest trends and opportunities in decentralized finance.</p>
                                             </div>
+
+
+                                            <div className="event-card bg-gray-50 rounded-lg p-4"
+                                            // onClick={() => showEventDetails('event3')}
+                                            >
+                                                <div className="flex justify-between items-start">
+                                                    <div>
+                                                        <div className="flex items-center mb-1">
+                                                            <h3 className="text-md font-medium text-gray-800">DeFi Meetup</h3>
+                                                            <span className="event-badge bg-green-100 text-green-800 rounded-full ml-2">Meetup</span>
+                                                        </div>
+                                                        <p className="text-xs text-gray-500 mb-2">Hosted by DeFi Alliance</p>
+                                                    </div>
+                                                    <div className="text-xs text-gray-500">
+                                                        <i className="far fa-calendar-alt mr-1"></i> Jun 28
+                                                    </div>
+                                                </div>
+                                                <p className="text-sm text-gray-600 line-clamp-2">Monthly gathering of DeFi enthusiasts to discuss the latest trends and opportunities in decentralized finance.</p>
+                                            </div>
+
+                                            <div className="event-card bg-gray-50 rounded-lg p-4"
+                                            // onClick={() => showEventDetails('event3')}
+                                            >
+                                                <div className="flex justify-between items-start">
+                                                    <div>
+                                                        <div className="flex items-center mb-1">
+                                                            <h3 className="text-md font-medium text-gray-800">DeFi Meetup</h3>
+                                                            <span className="event-badge bg-green-100 text-green-800 rounded-full ml-2">Meetup</span>
+                                                        </div>
+                                                        <p className="text-xs text-gray-500 mb-2">Hosted by DeFi Alliance</p>
+                                                    </div>
+                                                    <div className="text-xs text-gray-500">
+                                                        <i className="far fa-calendar-alt mr-1"></i> Jun 28
+                                                    </div>
+                                                </div>
+                                                <p className="text-sm text-gray-600 line-clamp-2">Monthly gathering of DeFi enthusiasts to discuss the latest trends and opportunities in decentralized finance.</p>
+                                            </div>
+
                                         </div>
 
-                                        <button className="mt-4 w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300">
+                                        <button className="mt-4 w-full py-2 border border-blue-300 bg-white text-blue-500 rounded-md hover:bg-blue-700 hover:text-white transition duration-300">
                                             View All Events
                                         </button>
                                     </div>
@@ -365,7 +499,7 @@ function Dashboard() {
             </div>
 
             {/* <!-- Event Details Modal --> */}
-            <div id="eventModal" className="fixed inset-0 z-50 hidden overflow-y-auto">
+            <div id="eventModal" className="fixed inset-0 z-50 overflow-y-auto hidden">
                 <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                     <div className="fixed inset-0 transition-opacity" aria-hidden="true">
                         <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
@@ -375,33 +509,41 @@ function Dashboard() {
                         <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <div className="sm:flex sm:items-start">
                                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                                    <div className="flex justify-between items-start">
-                                        <h3 className="text-lg leading-6 font-medium text-gray-900" id="modalTitle">Event Title</h3>
-                                        <button type="button"
-                                        // onClick={closeModal()} className="text-gray-400 hover:text-gray-500"
-                                        >
-                                            <i className="fas fa-times"></i>
-                                        </button>
+                                    <div className='flex items-start'>
+                                        <img src={currEvent?.image_url} alt={currEvent?.title}
+                                            className='rounded-md object-cover'
+                                        />
+                                    </div>
+                                    <div className="flex justify-center items-start">
+                                        <h3 className="text-lg leading-6 font-medium text-gray-900" id="modalTitle">{currEvent?.title}</h3>
                                     </div>
                                     <div className="mt-2">
                                         <div className="flex items-center text-sm text-gray-500 mb-4">
                                             <i className="far fa-calendar-alt mr-2"></i>
-                                            <span id="modalDate">June 15-17, 2023</span>
+                                            <span id="modalDate">{currEvent?.date}</span>
                                         </div>
                                         <div className="flex items-center text-sm text-gray-500 mb-4">
                                             <i className="fas fa-map-marker-alt mr-2"></i>
-                                            <span id="modalLocation">New York, USA</span>
+                                            <span id="modalLocation">{currEvent?.location || 'New York'}</span>
                                         </div>
                                         <div className="flex items-center text-sm text-gray-500 mb-4">
                                             <i className="fas fa-user-tie mr-2"></i>
-                                            <span id="modalHost">Hosted by Blockchain Association</span>
+                                            <span id="modalHost">
+                                                <a href={`https://suiscan.xyz/testnet/account/${currEvent?.host}`}>
+                                                    {currEvent?.host.slice(0, 10)}...{currEvent?.host.slice(-5)}
+                                                </a>
+                                            </span>
                                         </div>
-                                        <p className="text-sm text-gray-600 mb-4" id="modalDescription">
-                                            Detailed event description will appear here.
-                                        </p>
+
+                                        <div className="flex items-center text-sm text-gray-500 mb-4">
+                                            <p className="text-sm text-gray-600 mb-4" id="modalDescription">
+                                                <i className="fa-solid fa-circle-info mr-2"></i>
+                                                {currEvent?.description}
+                                            </p>
+                                        </div>
                                         <div className="flex items-center text-sm text-gray-500 mb-4">
                                             <i className="fas fa-users mr-2"></i>
-                                            <span id="modalAttendees">25 people attending</span>
+                                            <span id="modalAttendees">{currEvent?.people_joined || '32'} people attending</span>
                                         </div>
                                     </div>
                                 </div>
@@ -412,7 +554,7 @@ function Dashboard() {
                                 Register Now
                             </button>
                             <button type="button"
-                                // onClick={closeModal()} 
+                                onClick={closeModal}
                                 className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                             >
                                 Close
