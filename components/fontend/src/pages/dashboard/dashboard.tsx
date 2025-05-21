@@ -3,7 +3,9 @@ import styles from './dashboard.module.scss';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { ConnectButton, useSuiClient } from '@mysten/dapp-kit';
+import { ConnectButton, useSuiClient, useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
+import { coin_unit, PACKAGE_ID } from '../../App';
+import { Transaction } from '@mysten/sui/transactions';
 
 const cx = classNames.bind(styles);
 interface DisplayEvent {
@@ -15,13 +17,15 @@ interface DisplayEvent {
     host: string;
     image_url: string;
     location?: string;
-    ticket_price?: string;
+    ticket_price: string;
     people_joined?: string;
     max_tickets?: string;
 }
 function Dashboard() {
     //sui
+    const currAccount = useCurrentAccount();
     const client = useSuiClient();
+    const {mutate: sign_execute} = useSignAndExecuteTransaction();
 
     //states
     const [events, setEvents] = useState<DisplayEvent[]>([]);
@@ -55,6 +59,7 @@ function Dashboard() {
                             event_type: (events_data.data?.content as any).fields.event_type || 'Meetup',
                             host: (events_data.data?.content as any).fields.host,
                             image_url: (events_data.data?.content as any).fields.image,
+                            ticket_price: (events_data.data?.content as any).fields.ticket_price,
                         });
                     }
                 }
@@ -66,6 +71,8 @@ function Dashboard() {
 
         fetchEvents();
     }, [])
+
+    //functions
     function closeModal() {
         // throw new Error('Function not implemented.');
         document.getElementById('eventModal')?.classList.add('hidden');
@@ -79,7 +86,57 @@ function Dashboard() {
             setCurrEvent(event);
         }
     }
+    async function handleRegister() {
+        if (currAccount) {
+            const userToken = await client.getOwnedObjects({
+                owner: currAccount.address,
+                filter: {
+                    StructType: `0x2::coin::Coin<${PACKAGE_ID}::tick::TICK>`,
+                },
+                options: { showContent: true },
+            });
+            if (userToken) {
+                const tokenData = (userToken.data[0].data?.content as any).fields;
+                console.log('tokenData', tokenData);
+                const ticketPrice = Number(currEvent?.ticket_price) || 0;
+                const userBalance = Number(tokenData.balance);
+                const tokenId = tokenData.id.id;
+                const event_id = currEvent?.id || '';
+                if (userBalance >= ticketPrice) {
+                    // Proceed with registration
+                    const tx = new Transaction();
+                    tx.setGasBudget(30000000);
+                    tx.moveCall({
+                        target: `${PACKAGE_ID}::workshop::buy_ticket`,
+                        arguments: [
+                            tx.object(tokenId),
+                            tx.object(event_id),
+                        ],
+                    });
+                    sign_execute({
+                        transaction: tx,
+                        account: currAccount,
+                        chain: 'sui:testnet'
+                    },
+                    {
+                        onSuccess: (result) => {
+                            console.log("Transaction successful:", result);
+                            alert('You have successfully registered for this event!');
+                            closeModal();
+                        },
+                        onError: (error) => {
+                            console.error("Transaction failed:", error);
+                            alert('Transaction failed. Please try again.');
+                        },
+                    }
+                ) 
 
+                } else {
+                    alert('You do not have enough TICK tokens to register for this event.');
+                }
+            }
+        }
+    }
     return (
 
         <div className={`${cx('wrapper', 'gradient-bg')} bg-[#191970] min-h-screen text-white font-sans`}>
@@ -550,7 +607,9 @@ function Dashboard() {
                             </div>
                         </div>
                         <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                            <button type="button" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <button type="button" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                onClick={handleRegister}
+                            >
                                 Register Now
                             </button>
                             <button type="button"
