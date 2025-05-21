@@ -35,7 +35,6 @@ function BuyTicket() {
         }
         fetchData();
     }, [])
-
     //functions
     const getAllAssets = async () => {
         let return_value: TicketInfo[] = [];
@@ -43,7 +42,7 @@ function BuyTicket() {
             let items = await client.getOwnedObjects({
                 owner: currAccount.address,
                 filter: {
-                    StructType: `0x2:coin::Coin<${PACKAGE_ID}::tick::TICK>`
+                    StructType: `0x2::coin::Coin<${PACKAGE_ID}::tick::TICK>`
                 },
                 options: {
                     showContent: true,
@@ -127,11 +126,11 @@ function BuyTicket() {
                         <i className="fas fa-coins mr-2"></i> NFT Exchange
                     </h1>
                     <div className={`${cx('actions')} flex items-center space-x-4`}>
-                        <button
+                        <div
                             className={`${cx('connect-wallet')} bg-white text-purple-600 px-4 py-2 rounded-full font-semibold hover:bg-gray-100 transition`}>
                             {/* <i className="fas fa-wallet mr-2"></i> Connect Wallet */}
                             <ConnectButton />
-                        </button>
+                        </div>
                         <div className={`${cx('user-icon')} w-10 h-10 rounded-full bg-white flex items-center justify-center text-purple-600`}>
                             <i className="fas fa-user"></i>
                         </div>
