@@ -52,7 +52,7 @@ function Dashboard() {
                             title: (events_data.data?.content as any).fields.event_name,
                             description: (events_data.data?.content as any).fields.description,
                             date: (events_data.data?.content as any).fields.date || 'Jun 28',
-                            event_type: (events_data.data?.content as any).fields.event_type || 'meetup',
+                            event_type: (events_data.data?.content as any).fields.event_type || 'Meetup',
                             host: (events_data.data?.content as any).fields.host,
                             image_url: (events_data.data?.content as any).fields.image,
                         });
@@ -163,7 +163,7 @@ function Dashboard() {
                         <div className={`${cx('mobile-nav-link')} flex flex-col items-center justify-center p-3 text-gray-500`}>
                             <i className="fas fa-plus-circle"></i>
                             <span className="text-xs mt-1">
-                                <Link to="/create_event">Create Event</Link>
+                                <Link to="/event_create">Create Event</Link>
                             </span>
                         </div>
                     </div>

@@ -46,7 +46,6 @@ function CreateEvent() {
                             `Your event has ID: ${createdObjectId}`
                         );
                         await axios.post('https://blocketserver.vercel.app/v1/event/create_event', {
-                        // await axios.post('http://localhost:3000/v1/event/create_event', {
                             event_id: createdObjectId
                         })
                     } else {
