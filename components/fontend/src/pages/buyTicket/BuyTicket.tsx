@@ -169,7 +169,7 @@ function BuyTicket() {
                         <div id="nftInfo" className="bg-gray-50 p-6 rounded-lg border border-gray-200">
                             <div className="flex flex-col md:flex-row gap-6">
                                 <div className="flex-shrink-0">
-                                    <img id="nftImage" src="sui_logo.png" alt="NFT"
+                                    <img id="nftImage" src={currDex.image_object} alt="NFT"
                                         className="w-48 h-48 rounded-lg object-cover shadow" />
                                 </div>
                                 <div className="flex-1">

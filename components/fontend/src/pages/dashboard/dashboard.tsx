@@ -169,8 +169,8 @@ function Dashboard() {
                                     <Link to="/market">Market</Link>
                                 </div>
                                 <div id="events-tab" className={`${cx('nav-link')} flex items-center px-4 py-3 text-sm font-medium rounded-md text-blue-200 hover:bg-blue-800 hover:text-white`}>
-                                    <i className="fas fa-calendar-alt mr-3"></i>
-                                    <Link to="/events">Events</Link>
+                                    <i className="fas fa-exchange mr-3"></i>
+                                    <Link to="/buy_ticket">Exchange P2P</Link>
                                 </div>
                                 <div id="create-event-tab" className={`${cx('nav-link')} flex items-center px-4 py-3 text-sm font-medium rounded-md text-blue-200 hover:bg-blue-800 hover:text-white`}>
                                     <i className="fas fa-plus-circle mr-3"></i>

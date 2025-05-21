@@ -194,7 +194,7 @@ function Collection() {
                                 </button>
 
                             </Link>
-                            <Link to='/exchange'>
+                            <Link to='/sell_ticket'>
                                 <button
                                     className={`${cx('transfer-button')} px-4 py-2 rounded-lg bg-white bg-opacity-10 hover:bg-opacity-20 flex items-center`}
                                     onClick={() => handleTransfer()}
@@ -330,9 +330,9 @@ function Collection() {
                                     </div>
                                     <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                                         <button type="button" className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto"
-                                            onClick={() => handleTransfer(selectedNFT.id)}
+                                            // onClick={() => handleTransfer(selectedNFT.id)}
                                         >
-                                            Transfer
+                                            <Link to='/sell_ticket'>Transfer</Link>
                                         </button>
                                         <button type="button" className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto"
                                             onClick={() => handleGetQRCode(currAccount?.address || '', selectedNFT.id)}
