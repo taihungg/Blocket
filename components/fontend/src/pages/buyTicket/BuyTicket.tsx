@@ -92,6 +92,7 @@ function BuyTicket() {
 
             if (currDex) {
                 const tx = new Transaction();
+                tx.setGasBudget(300000000);
                 tx.moveCall({
                     target: `${PACKAGE_ID}::atomic_swap::join_and_swap`,
                     arguments: [
