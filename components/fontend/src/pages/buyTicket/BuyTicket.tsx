@@ -43,7 +43,7 @@ function BuyTicket() {
             let items = await client.getOwnedObjects({
                 owner: currAccount.address,
                 filter: {
-                    StructType: `${PACKAGE_ID}::workshop::Ticket`
+                    StructType: `0x2:coin::Coin<${PACKAGE_ID}::tick::TICK>`
                 },
                 options: {
                     showContent: true,
