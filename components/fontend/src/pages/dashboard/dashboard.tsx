@@ -146,8 +146,9 @@ function Dashboard() {
                     <div className={`${cx('sidebar-inner', 'gradient-bg')} flex flex-col w-64 text-white`}>
                         <div className={`${cx('sidebar-header')} flex items-center justify-center h-16 px-4 border-b border-blue-800`}>
                             <div className={`${cx('logo-container')} flex items-center`}>
-                                <i className="fas fa-coins text-2xl text-yellow-400 mr-2"></i>
-                                <span className={`${cx('logo-text')} text-xl font-bold`}>CryptoDash</span>
+                                {/* <i className="fas fa-coins text-2xl text-yellow-400 mr-2"></i> */}
+                                <img src="blocket_main_logo.jpg" alt="blocket_logo" className='rounded-full w-12 h-12 mr-2'/>
+                                <span className={`${cx('logo-text')} text-xl font-bold`}>Blocket</span>
                             </div>
                         </div>
                         <div className="flex flex-col flex-grow px-4 py-4 overflow-y-auto">
@@ -180,7 +181,7 @@ function Dashboard() {
                         </div>
                         <div className={`${cx('profile')} p-4 border-t border-blue-800`}>
                             <div className={`${cx('profile-container')} flex items-center`}>
-                                <img className={`${cx('avatar')} w-10 h-10 rounded-full`} src="https://randomuser.me/api/portraits/women/44.jpg" alt="User avatar" />
+                                <img className={`${cx('avatar')} w-10 h-10 rounded-full`} src="blocket_main_logo.jpg" alt="User avatar" />
                                 <div className={`${cx('user-info')} ml-3`}>
                                     <p className={`${cx('user-name')} text-sm font-medium`}>Jane Smith</p>
                                     <p className={`${cx('user-role')} text-xs text-blue-200`}>Premium Member</p>
@@ -250,7 +251,7 @@ function Dashboard() {
                             <div className={`${cx('user-menu')} ml-3 mr-3 relative`}>
                                 <div>
                                     <button className={`${cx('user-menu-btn')} flex items-center max-w-xs text-sm rounded-full focus:outline-none`}>
-                                        <img className={`${cx('user-avatar')} w-8 h-8 rounded-full`} src="https://randomuser.me/api/portraits/women/44.jpg" alt="User avatar" />
+                                        <img className={`${cx('user-avatar')} w-8 h-8 rounded-full`} src="blocket_main_logo.jpg" alt="User avatar" />
                                     </button>
                                 </div>
                             </div>
